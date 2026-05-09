@@ -1414,6 +1414,13 @@
           .then(registration => {
             console.log('✅ Service Worker registrato con successo!', registration.scope);
 
+            setTimeout(() => { registration.update(); }, 2000);
+
+            setInterval(() => {
+                console.log("🔄 Controllo aggiornamenti periodico...");
+                registration.update();
+            }, 1000 * 60 * 60);
+
             // Logica del Toast di Aggiornamento
             registration.addEventListener('updatefound', () => {
               const newWorker = registration.installing;
