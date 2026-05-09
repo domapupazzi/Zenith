@@ -88,6 +88,7 @@ Tutte le funzionalità contrassegnate con `X` sono obiettivi futuri. Se vuoi con
 | X | **Note Vocali** | Registrazione audio e allegati multimediali. / *Audio recording and multimedia attachments.* |
 | X | **Backlinks Auto** | Menù a tendina suggerito per i collegamenti tra note. / *Intelligent dropdown for note link suggestions.* |
 | X | **Timer Pomodoro** | Focus Tracker integrato con ricompense XP. / *Integrated Pomodoro Tracker with XP rewards.* |
+| X | **Multipli linguaggi** | Possibilità di modificare la lingua e lingua diversa rispetto alle impostazioni di sistema. / *Possibility to change language and different languages respect to system options*
 
 ## ⚖️ Licenza e Utilizzo / License & Usage
 
