@@ -410,3 +410,77 @@ body.plan-novizio .premium-locked:hover { opacity: 0.8; cursor: pointer; }
     text-transform: uppercase; 
     letter-spacing: 0.5px;
 }
+/* ==========================================
+    ALTO CONTRASTO PER PULSANTI E TAB
+   ========================================== */
+
+/* 1. Forza la leggibilità su TUTTI i bottoni dell'app */
+.btn {
+    /* Magia CSS: oklch inverte dinamicamente la luminosità. 
+       Se l'accento è giallo (chiaro), il testo diventa nero. Se è blu, diventa bianco! */
+    color: var(--text-on-accent, oklch(from var(--accent) calc(1 - l) 0 h)) !important;
+}
+
+/* 2. Rende più visibile il testo normale delle tab nelle Impostazioni */
+.settings-nav-item {
+    color: var(--text-1) !important; /* Usa il colore primario invece del grigino secondario */
+}
+
+/* 3. Evidenzia meglio la tab quando ci passi sopra col mouse */
+.settings-nav-item:hover:not(.active) {
+    background: var(--bg-hover) !important;
+    color: var(--text-1) !important;
+}
+
+/* 4. Evidenzia la tab ATTIVA riempiendola e applicando il contrasto dinamico */
+.settings-nav-item.active {
+    background: var(--accent) !important;
+    color: oklch(from var(--accent) calc(1 - l) 0 h) !important; 
+    font-weight: 800 !important;
+    letter-spacing: 0.5px;
+}
+
+/* Fix per i pulsanti dei temi che potrebbero avere lo stesso problema */
+.theme-option.active {
+    color: oklch(from var(--bg-active) calc(1 - l) 0 h) !important; 
+}
+
+/* ==========================================
+    VISIBILITÀ: STILI TAG E SWITCH LAYOUT
+   ========================================== */
+
+/* 1. Pulsanti Stile Tag (Etichette) */
+.tag-style-btn {
+    /* Migliora la visibilità dei tasti inattivi */
+    background: var(--bg-card2) !important;
+    color: var(--text-1) !important;
+    border: 1px solid var(--border) !important;
+}
+
+.tag-style-btn.active {
+    /* Applica contrasto dinamico quando il tasto è selezionato */
+    background: var(--accent) !important;
+    color: oklch(from var(--accent) calc(1 - l) 0 h) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 4px 10px var(--accent-dim);
+}
+
+/* 2. Pulsanti Switch Layout (Griglia/Tabella) */
+.sub-nav-item {
+    /* Forza il colore primario per i tasti non attivi */
+    color: var(--text-1) !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.sub-nav-item:hover:not(.active) {
+    background: var(--bg-hover) !important;
+}
+
+.sub-nav-item.active {
+    /* Applica contrasto dinamico e riempimento pieno */
+    background: var(--accent) !important;
+    color: oklch(from var(--accent) calc(1 - l) 0 h) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 4px 10px var(--accent-dim);
+}
