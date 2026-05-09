@@ -1,24 +1,35 @@
 /**
  * @class TagManager
  * @description Gestisce i colori personalizzati, gli stili visivi e il dizionario globale delle etichette (tag).
+ * Supporta gerarchie (Padre/Figlio), sinonimi (Alias) e aggiornamenti a cascata su tutte le note.
  */
 class TagManager {
+    /**
+     * Inizializza il gestore dei tag.
+     * @param {Object} app - L'istanza principale dell'applicazione (ZenithEngine).
+     */
     constructor(app) {
         this.app = app;
-        // Struttura Dati Base
         this.tags = {}; 
-        this.globalStyle = 'dot'; // Default richiesto
+        this.globalStyle = 'dot'; // Stile visivo di default richiesto
     }
 
+    /**
+     * Avvia il manager, carica i salvataggi, applica lo stile e disegna le interfacce.
+     */
     init() {
         this.loadSettings();
         this.applyGlobalStyle(this.globalStyle);
         this.initEvents();
         this.renderDictionary();
         this.updatePalette();
-        this.renderSidebarTags()
+        this.renderSidebarTags();
     }
 
+    /**
+     * Carica il dizionario dei tag dal LocalStorage.
+     * Se non esiste, crea dei dati demo iniziali per mostrare le funzionalità.
+     */
     loadSettings() {
         const savedData = localStorage.getItem("appTagManager");
         if (savedData) {
@@ -26,7 +37,6 @@ class TagManager {
             this.tags = parsed.tags || {};
             this.globalStyle = parsed.globalStyle || 'dot';
         } else {
-            // Dati demo iniziali per far vedere come funziona
             this.tags = {
                 "urgente": { color: "#ff0044" },
                 "lavoro": { color: "#4a56d8" },
@@ -36,6 +46,10 @@ class TagManager {
         }
     }
 
+    /**
+     * Salva il dizionario corrente nel LocalStorage e forza l'aggiornamento
+     * visivo sia delle note che della sidebar.
+     */
     saveSettings() {
         const dataToSave = {
             tags: this.tags,
@@ -43,28 +57,37 @@ class TagManager {
         };
         localStorage.setItem("appTagManager", JSON.stringify(dataToSave));
         
-        // Se c'è NotesManager, forza il re-render delle note per applicare i colori subito!
+        // Forza il re-render delle note per applicare i colori o i nuovi nomi all'istante
         if (this.app.notes && typeof this.app.notes.renderNotes === 'function') {
             this.app.notes.renderNotes();
         }
-        this.renderSidebarTags()
+        this.renderSidebarTags();
     }
 
+    /**
+     * Applica globalmente lo stile visivo dei tag (es. 'dot', 'pill', 'outline') al body.
+     * @param {string} style - L'identificatore dello stile CSS.
+     */
     applyGlobalStyle(style) {
         this.globalStyle = style;
         document.body.setAttribute('data-tag-style', style);
     }
 
     /**
-     * Ritorna il colore esadecimale di un tag, o l'accento di default se non esiste.
+     * Ritorna il colore esadecimale assegnato a un tag.
+     * @param {string} tagName - Il nome del tag.
+     * @returns {string} Il colore in HEX o la variabile CSS di default se non trovato.
      */
     getColorForTag(tagName) {
         const name = tagName.toLowerCase().trim();
         return this.tags[name] ? this.tags[name].color : "var(--accent)";
     }
 
+    /**
+     * Collega gli ascoltatori di eventi per la creazione dei tag e il cambio stile.
+     */
     initEvents() {
-        // --- 1. Ascolta i pulsanti dello stile globale ---
+        // Ascolta i pulsanti dello stile globale
         const styleBtns = document.querySelectorAll(".tag-style-btn");
         styleBtns.forEach(btn => {
             btn.addEventListener("click", (e) => {
@@ -77,6 +100,7 @@ class TagManager {
                     b.style.background = "var(--bg-card2)";
                     b.style.color = "var(--text-1)";
                 });
+                
                 e.target.classList.add("active");
                 e.target.style.background = "var(--accent)";
                 e.target.style.color = "#fff";
@@ -85,7 +109,8 @@ class TagManager {
             });
         });
 
-       const activeBtn = document.querySelector(`.tag-style-btn[data-style="${this.globalStyle}"]`);
+        // Imposta il pulsante di stile attualmente attivo
+        const activeBtn = document.querySelector(`.tag-style-btn[data-style="${this.globalStyle}"]`);
         if (activeBtn) {
             document.querySelectorAll(".tag-style-btn").forEach(b => {
                 b.classList.remove("active");
@@ -97,14 +122,13 @@ class TagManager {
             activeBtn.style.color = "#fff";
         }
 
-        // --- 2. 🟢 NUOVO: Ascolta la Creazione di un Nuovo Tag ---
+        // Ascolta la creazione manuale di un nuovo tag dalle impostazioni
         const addBtn = document.getElementById("addNewTagBtn");
         if (addBtn) {
             addBtn.addEventListener("click", () => {
                 const input = document.getElementById("newTagName");
                 const colorInput = document.getElementById("newTagColor");
                 
-                // Pulizia del nome (rimuove spazi e # iniziali)
                 let tagName = input.value.trim().toLowerCase().replace(/^#/, '');
                 
                 if (!tagName) {
@@ -112,7 +136,6 @@ class TagManager {
                     return;
                 }
                 
-                // Salva il nuovo tag nel dizionario
                 this.tags[tagName] = { color: colorInput.value };
                 this.saveSettings();
                 this.renderDictionary();
@@ -122,15 +145,16 @@ class TagManager {
                     this.app.gamification.unlockBadge("tag_master");
                 }
                 
-                input.value = ""; // Svuota l'input
+                input.value = ""; 
                 if (typeof Utils !== 'undefined') Utils.showToast(`Tag #${tagName} creato! 🏷️`);
             });
         }
     }
 
     /**
-     * Registra automaticamente nuovi tag nel dizionario se non esistono ancora.
-     * @param {Array} tagList - Lista di stringhe (tag) da controllare.
+     * Registra automaticamente nuovi tag nel dizionario (assegnando colore default) 
+     * se l'utente li ha digitati a mano in una nota senza averli creati prima.
+     * @param {Array} tagList - Array di nomi di tag.
      */
     registerTags(tagList) {
         if (!tagList || !Array.isArray(tagList)) return;
@@ -139,20 +163,23 @@ class TagManager {
         tagList.forEach(t => {
             const lowTag = t.toLowerCase().trim();
             if (lowTag && !this.tags[lowTag]) {
-                // Se il tag è nuovo, lo aggiungiamo con il colore di default
-                this.tags[lowTag] = { color: "#6c7af0" }; // O il tuo --accent
+                this.tags[lowTag] = { color: "#6c7af0" }; 
                 hasNew = true;
             }
         });
 
         if (hasNew) {
             this.saveSettings();
-            this.renderDictionary(); // Aggiorna la lista nelle impostazioni se aperta
+            this.renderDictionary(); 
         } else {
             this.renderSidebarTags();
         }
     }
 
+    /**
+     * Disegna l'interfaccia complessa per la gestione dei tag all'interno delle Impostazioni
+     * (colori, rinomina, gerarchie, sinonimi e conteggio).
+     */
     renderDictionary() {
         const container = document.getElementById("tagDictionaryList");
         if (!container) return;
@@ -160,7 +187,7 @@ class TagManager {
         container.innerHTML = "";
         const tagNames = Object.keys(this.tags);
 
-        // 🟢 CALCOLO RIFERIMENTI: Conta quante note usano ogni tag
+        // Conta quante note attive usano ogni tag
         const tagCounts = {};
         if (this.app.loggedUser && this.app.loggedUser.notes) {
             this.app.loggedUser.notes.forEach(n => {
@@ -180,19 +207,18 @@ class TagManager {
 
         tagNames.forEach(tagName => {
             const color = this.tags[tagName].color;
-            const count = tagCounts[tagName] || 0; // Prende il numero di note
+            const count = tagCounts[tagName] || 0; 
             const tagData = this.tags[tagName];
             const parent = tagData.parent || null;
             const aliases = tagData.aliases ? tagData.aliases.join(', ') : "";
             
             const div = document.createElement("div");
             div.className = "tag-dict-item";
-            // Sostituisci il blocco div.innerHTML dentro renderDictionary() con questo:
-            // Cerca il punto dove generi parentOptions e aggiungi il controllo:
+            
             let parentOptions = `<option value="">-- Nessun Padre --</option>`;
             tagNames.forEach(t => {
                 if (t !== tagName) {
-                    // 🟢 Se tagName è un antenato di t, non permettere a t di diventare padre di tagName
+                    // Previene la selezione se creerebbe un Loop Infinito nella gerarchia
                     if (!this.isDescendant(tagName, t)) {
                         const isSelected = t === parent ? "selected" : "";
                         parentOptions += `<option value="${t}" ${isSelected}>Sotto: #${t}</option>`;
@@ -200,7 +226,6 @@ class TagManager {
                 }
             });
 
-            // 🟢 UI MIGLIORATA: Layout a griglia per Gerarchia e Sinonimi
             div.innerHTML = `
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 12px; padding-right: 10px;">
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -238,19 +263,17 @@ class TagManager {
             container.appendChild(div);
         });
 
-        // Riaggancia gli eventi (color picker e delete) come fatto in precedenza...
         this.attachDictionaryEvents(container);
     }
     
     /**
-     * Calcola i tag più usati e popola la sezione dedicata nella Sidebar.
+     * Calcola i 5 tag più utilizzati e li posiziona in cima nella Sidebar per l'accesso rapido.
      */
     renderSidebarTags() {
         const sidebarContainer = document.getElementById("sidebarSmartTags");
         const placeholder = document.getElementById("noTagsPlaceholder");
         if (!sidebarContainer) return;
 
-        // 1. Contiamo le occorrenze di ogni tag (solo note attive)
         const counts = {};
         if (this.app.loggedUser && this.app.loggedUser.notes) {
             this.app.loggedUser.notes.forEach(n => {
@@ -265,24 +288,16 @@ class TagManager {
 
         const tagNames = Object.keys(counts);
 
-        // 2. Gestione Placeholder
         if (tagNames.length === 0) {
             if (placeholder) placeholder.style.display = "block";
-            // Rimuove eventuali vecchi link ai tag
-            const oldLinks = sidebarContainer.querySelectorAll('.nav-item-smart');
-            oldLinks.forEach(l => l.remove());
+            sidebarContainer.querySelectorAll('.nav-item-smart').forEach(l => l.remove());
             return;
         }
 
         if (placeholder) placeholder.style.display = "none";
 
-        // 3. Prendiamo i Top 5 tag per frequenza
-        const topTags = tagNames
-            .sort((a, b) => counts[b] - counts[a])
-            .slice(0, 5);
+        const topTags = tagNames.sort((a, b) => counts[b] - counts[a]).slice(0, 5);
 
-        // 4. Rendering fisico degli item nella Sidebar
-        // Puliamo i vecchi tag (senza toccare il placeholder)
         sidebarContainer.querySelectorAll('.nav-item-smart').forEach(l => l.remove());
 
         topTags.forEach(tagName => {
@@ -299,7 +314,6 @@ class TagManager {
                 <span style="font-size: 10px; opacity: 0.6;">${counts[tagName]}</span>
             `;
             
-            // Cliccando il tag nella sidebar, usiamo la ricerca del NotesManager
             btn.onclick = () => {
                 if (this.app.notes) {
                     this.app.notes.triggerTagSearch(tagName);
@@ -309,10 +323,12 @@ class TagManager {
             sidebarContainer.appendChild(btn);
         });
     }
+
     /**
-     * Ritorna un array con il nome del tag stesso e tutti i suoi discendenti (figli, nipoti, ecc.)
+     * Ritorna un array contenente il tag specificato e tutti i suoi discendenti.
+     * @param {string} tagName - Il tag di partenza.
+     * @returns {Array<string>} Array dei tag familiari.
      */
-    /** 🟢 Ritorna il tag e tutti i suoi figli/nipoti ricorsivamente */
     getFamily(tagName) {
         let family = [tagName.toLowerCase()];
         for (const [name, data] of Object.entries(this.tags)) {
@@ -323,7 +339,12 @@ class TagManager {
         return family;
     }
 
-    /** 🟢 Verifica se un tag è un discendente di un altro (per prevenire loop) */
+    /**
+     * Verifica se un tag è un discendente gerarchico di un altro tag per prevenire i loop.
+     * @param {string} parentTagName - Il presunto tag genitore.
+     * @param {string} childTagName - Il tag figlio da controllare.
+     * @returns {boolean} True se è discendente, False se non lo è.
+     */
     isDescendant(parentTagName, childTagName) {
         const childData = this.tags[childTagName];
         if (!childData || !childData.parent) return false;
@@ -331,26 +352,30 @@ class TagManager {
         return this.isDescendant(parentTagName, childData.parent);
     }
 
-    // Ricordati di chiamare this.renderSidebarTags() dentro saveSettings() 
-    // e alla fine di init() per avere la sidebar sempre aggiornata.
+    /**
+     * Popola la palette dei colori predefinita (i colori dei temi) all'interno degli input color.
+     */
     updatePalette() {
         const palette = document.getElementById("tagColorPalette");
         if (!palette) return;
 
-        // I colori "Core" dei tuoi 15 temi
         const themeAccents = [
             "#6c7af0", "#4a56d8", "#4d9cf0", "#ff007f", "#8b9c73", 
             "#fcd581", "#f06449", "#cba6f7", "#9c27b0", "#00dcff",
             "#b58900", "#ffb300", "#00e676", "#e91e63", "#00ff00"
         ];
 
-        palette.innerHTML = themeAccents
-            .map(color => `<option value="${color}">`)
-            .join("");
+        palette.innerHTML = themeAccents.map(color => `<option value="${color}">`).join("");
     }
-    /** Gestisce i cambi di colore e l'eliminazione dei tag dal dizionario */
-    /** Gestisce i cambi di colore e l'eliminazione dei tag dal dizionario */
+
+    /**
+     * Delega tutti gli ascoltatori agli input dinamici del dizionario 
+     * (Cambio genitore, rinomina, alias, colore, eliminazione).
+     * @param {HTMLElement} container - L'elemento wrapper del dizionario.
+     */
     attachDictionaryEvents(container) {
+        
+        // Cambio Gerarchia (Padre)
         container.querySelectorAll(".tag-parent-select").forEach(sel => {
             sel.addEventListener("change", (e) => {
                 const tag = e.currentTarget.dataset.tag;
@@ -358,24 +383,29 @@ class TagManager {
                 this.tags[tag].parent = e.currentTarget.value || null;
                 
                 this.saveSettings();
-                // 🟢 FIX: Ricarica il dizionario per aggiornare le "opzioni vietate" negli altri tag
                 this.renderDictionary(); 
                 
                 if (typeof Utils !== 'undefined') Utils.showToast(`Gerarchia aggiornata per #${tag} 🌳`);
             });
         });
 
+        // Modifica Sinonimi (Alias)
         container.querySelectorAll(".tag-aliases-input").forEach(inp => {
             inp.addEventListener("change", (e) => {
                 const tag = e.currentTarget.dataset.tag;
                 if (!this.tags[tag]) return;
-                // Pulisce e formatta la stringa in un array
-                const aliasArray = e.currentTarget.value.split(',').map(s => s.trim().toLowerCase().replace(/^#/, '')).filter(s => s);
+                
+                const aliasArray = e.currentTarget.value.split(',')
+                    .map(s => s.trim().toLowerCase().replace(/^#/, ''))
+                    .filter(s => s);
+                    
                 this.tags[tag].aliases = aliasArray;
                 this.saveSettings();
                 if (typeof Utils !== 'undefined') Utils.showToast(`Sinonimi aggiornati per #${tag} 🔗`);
             });
         });
+        
+        // Modifica Colore
         container.querySelectorAll(".tag-color-picker").forEach(picker => {
             picker.addEventListener("input", (e) => {
                 const tag = e.target.dataset.tag;
@@ -387,47 +417,41 @@ class TagManager {
                 if (typeof Utils !== 'undefined') Utils.showToast(`Colore aggiornato per #${tag} 🎨`);
             });
         });
-        // 1. 🟢 NUOVO: Ascolta la Rinominazione del Tag
+        
+        // Rinominazione del Tag
         container.querySelectorAll(".tag-rename-input").forEach(input => {
             input.addEventListener("change", (e) => {
                 const oldTag = e.currentTarget.dataset.old;
                 let newTag = e.currentTarget.value.trim().toLowerCase().replace(/^#/, '');
 
-                // Se svuota il campo o non cambia nulla, ripristina il vecchio nome
                 if (!newTag || newTag === oldTag) {
                     e.currentTarget.value = oldTag;
                     return;
                 }
 
-                // Prevenzione: se il nuovo nome esiste già, blocca per evitare sovrascritture accidentali
                 if (this.tags[newTag]) {
                     if (typeof Utils !== 'undefined') Utils.showToast(`⚠️ Il tag #${newTag} esiste già!`);
                     e.currentTarget.value = oldTag;
                     return;
                 }
 
-                // A. Aggiorna il dizionario (Crea il nuovo, copia i dati, elimina il vecchio)
+                // Sposta i dati sulla nuova chiave
                 this.tags[newTag] = this.tags[oldTag];
                 delete this.tags[oldTag];
 
-                // B. Aggiorna TUTTE le note a cascata
+                // Aggiorna fisicamente il tag in tutte le note dell'utente
                 let notesUpdated = false;
                 if (this.app.loggedUser && this.app.loggedUser.notes) {
                     this.app.loggedUser.notes.forEach(note => {
                         if (note.tags && note.tags.includes(oldTag)) {
-                            // Sostituisce il vecchio tag con il nuovo nell'array della nota
                             note.tags = note.tags.map(t => t === oldTag ? newTag : t);
                             notesUpdated = true;
                         }
                     });
                     
-                    // Salva le modifiche al database principale
-                    if (notesUpdated) {
-                        this.app.saveUser();
-                    }
+                    if (notesUpdated) this.app.saveUser();
                 }
 
-                // C. Salva le impostazioni (aggiorna sidebar e griglia note automaticamente)
                 this.saveSettings();
                 this.renderDictionary();
                 
@@ -435,33 +459,26 @@ class TagManager {
             });
         });
 
-        // 🟢 FIX BUG: Eliminazione Globale del Tag (Dizionario + Note + Sidebar)
+        // Eliminazione Globale del Tag
         container.querySelectorAll(".delete-tag-btn").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 const tagToDelete = e.currentTarget.dataset.tag;
                 
-                // 1. Rimuove il tag dal dizionario impostazioni
                 delete this.tags[tagToDelete];
 
-                // 2. Scorre TUTTE le note e rimuove fisicamente la parola dal loro array
                 if (this.app.loggedUser && this.app.loggedUser.notes) {
                     let notesUpdated = false;
                     
                     this.app.loggedUser.notes.forEach(note => {
                         if (note.tags && note.tags.includes(tagToDelete)) {
-                            // Filtra via il tag eliminato
                             note.tags = note.tags.filter(t => t !== tagToDelete);
                             notesUpdated = true;
                         }
                     });
 
-                    // Se abbiamo ripulito delle note, salviamo il database principale
-                    if (notesUpdated) {
-                        this.app.saveUser();
-                    }
+                    if (notesUpdated) this.app.saveUser();
                 }
 
-                // 3. Salva le impostazioni (questo ridisegna le note e aggiorna la Sidebar da zero!)
                 this.saveSettings();
                 this.renderDictionary();
                 
@@ -469,21 +486,24 @@ class TagManager {
             });
         });
     }
+
     /**
-     * 🟢 NUOVO MOTORE SINONIMI: Converte gli alias nei tag ufficiali.
+     * Controlla un array di tag e converte eventuali sinonimi (alias) inseriti dall'utente 
+     * nel rispettivo Tag Ufficiale (Padre).
+     * @param {Array<string>} tagList - Lista mista di tag e/o sinonimi inseriti.
+     * @returns {Array<string>} Lista di tag ufficiali normalizzati.
      */
     resolveAliases(tagList) {
         if (!tagList || !Array.isArray(tagList)) return [];
         
         return tagList.map(t => {
             const lowTag = t.toLowerCase().trim();
-            // Cerca nel dizionario se questo tag è un sinonimo di qualche tag ufficiale
             for (const [mainTag, data] of Object.entries(this.tags)) {
                 if (data.aliases && data.aliases.includes(lowTag)) {
-                    return mainTag; // Trovato! Sostituisci con il tag Padre
+                    return mainTag; 
                 }
             }
-            return lowTag; // Se non è un sinonimo, lo lascia così com'è
+            return lowTag; 
         });
     }
 }

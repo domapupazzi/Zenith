@@ -1,12 +1,13 @@
 /**
  * @class CalendarManager
- * @description Gestisce l'interfaccia e la logica del calendario scadenze, visualizzando i giorni del mese
- * e indicando visivamente le note in scadenza tramite indicatori colorati (dot) in base alla priorità.
+ * @description Gestisce la visualizzazione a griglia del Calendario Mensile.
+ * Calcola i giorni, intercetta le note con data di scadenza (dueDate) e 
+ * genera gli indicatori visivi (dots), i tooltip e la modale di dettaglio giornaliera.
  */
 class CalendarManager {
     /**
-     * Inizializza il manager del calendario.
-     * @param {Object} app - L'istanza principale dell'applicazione (NoteFlowApp).
+     * Costruttore: Inizializza il manager collegandolo al motore principale e imposta la data odierna.
+     * @param {Object} app - Istanza principale di ZenithEngine.
      */
     constructor(app) { 
         this.app = app; 
@@ -14,28 +15,32 @@ class CalendarManager {
     }
 
     /**
-     * Inizializza e collega gli ascoltatori di eventi per la navigazione del calendario
-     * (mese precedente/successivo), la chiusura della modale giornaliera e il posizionamento dinamico del tooltip.
+     * Collega gli ascoltatori degli eventi per i controlli del calendario 
+     * (Cambio Mese, Tooltip Hover, Chiusura Modale Giornaliera).
      */
     initEvents() {
+        // Navigazione tra i mesi
         document.getElementById("prevMonthBtn")?.addEventListener("click", () => this.changeMonth(-1));
         document.getElementById("nextMonthBtn")?.addEventListener("click", () => this.changeMonth(1));
-        document.getElementById("closeDayNotesBtn")?.addEventListener("click", () => document.getElementById("dayNotesModal").classList.add("hidden"));
         
-        // Calcola in tempo reale la posizione del mouse per spostare il tooltip
+        // Chiusura modale dettaglio giorno
+        document.getElementById("closeDayNotesBtn")?.addEventListener("click", () => {
+            document.getElementById("dayNotesModal").classList.add("hidden");
+        });
+        
+        // Tooltip "Inseguimento Mouse": Segue il cursore quando un giorno con scadenze viene sfiorato
         document.addEventListener("mousemove", (e) => { 
-            const t = document.getElementById("calTooltip"); 
-            if (t && t.classList.contains("visible")) { 
-                t.style.left = (e.pageX + 15) + "px"; 
-                t.style.top = (e.pageY + 15) + "px"; 
+            const tooltip = document.getElementById("calTooltip"); 
+            if (tooltip && tooltip.classList.contains("visible")) { 
+                tooltip.style.left = (e.pageX + 15) + "px"; 
+                tooltip.style.top = (e.pageY + 15) + "px"; 
             } 
         });
     }
 
     /**
-     * Sposta la visualizzazione del calendario avanti o indietro di un determinato numero di mesi
-     * e richiede immediatamente un nuovo rendering della griglia.
-     * @param {number} dir - La direzione e quantità (es. -1 per mese precedente, 1 per mese successivo).
+     * Sposta il riferimento temporale avanti o indietro di 'N' mesi e aggiorna la griglia.
+     * @param {number} dir - Direzione (-1 per mese precedente, 1 per mese successivo).
      */
     changeMonth(dir) { 
         this.currentDate.setMonth(this.currentDate.getMonth() + dir); 
@@ -43,107 +48,146 @@ class CalendarManager {
     }
 
     /**
-     * Calcola la struttura del mese corrente (giorni totali, giorno di inizio settimana)
-     * e disegna la griglia HTML del calendario. Inserisce gli indicatori colorati (dot)
-     * all'interno dei giorni che contengono note in scadenza.
+     * Calcola la struttura del mese attuale, determina gli spazi vuoti,
+     * incrocia i giorni con le note in scadenza dell'utente e genera l'HTML della griglia.
      */
     render() {
         const grid = document.getElementById("calendarDaysGrid"); 
         const title = document.getElementById("calendarMonthDisplay");
         if (!grid || !title) return;
         
-        const y = this.currentDate.getFullYear(); 
-        const m = this.currentDate.getMonth();
-        const mN = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+        const year = this.currentDate.getFullYear(); 
+        const month = this.currentDate.getMonth();
+        const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
         
-        title.textContent = `${mN[m]} ${y}`; 
+        // Aggiorna Titolo Calendario
+        title.textContent = `${monthNames[month]} ${year}`; 
         grid.innerHTML = "";
 
-        const fDom = new Date(y, m, 1).getDay(); 
-        const eD = fDom === 0 ? 6 : fDom - 1; // Allinea la settimana partendo da Lunedì (0 = Lun)
-        const dIm = new Date(y, m + 1, 0).getDate(); // Trova quanti giorni ha il mese
+        // Calcolo Matematico Calendario: 
+        // Trova il giorno della settimana del 1° del mese (0=Domenica, 1=Lunedì...)
+        const firstDayOfMonth = new Date(year, month, 1).getDay(); 
+        // Shift per far iniziare la settimana di Lunedì invece che di Domenica
+        const emptyDaysAtStart = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; 
         
-        const tdy = new Date(); 
-        const isCM = tdy.getFullYear() === y && tdy.getMonth() === m;
+        // Quanti giorni ha questo mese? (Impostando giorno 0 del mese successivo)
+        const daysInMonth = new Date(year, month + 1, 0).getDate(); 
         
-        // Filtra solo le note attive che possiedono una data di scadenza
-        const aN = this.app.loggedUser.notes.filter(n => n.status !== 'trashed' && n.dueDate);
+        // Riferimento per evidenziare il giorno corrente (OGGI)
+        const today = new Date(); 
+        const isCurrentMonthAndYear = today.getFullYear() === year && today.getMonth() === month;
+        
+        // 1. Estrae tutte le note attive (non nel cestino) che hanno una data di scadenza
+        const activeNotesWithDueDate = this.app.loggedUser.notes.filter(n => n.status !== 'trashed' && n.dueDate);
 
-        // Disegna le celle vuote per l'inizio del mese
-        for (let i = 0; i < eD; i++) grid.innerHTML += `<div class="calendar-day empty"></div>`;
+        // 2. Disegna i "Buchi" (Giorni vuoti prima del 1° del mese)
+        for (let i = 0; i < emptyDaysAtStart; i++) {
+            grid.innerHTML += `<div class="calendar-day empty"></div>`;
+        }
         
-        // Disegna le celle dei giorni effettivi
-        for (let d = 1; d <= dIm; d++) {
-            const c = document.createElement("div"); 
-            c.className = "calendar-day";
+        // 3. Disegna le celle per ogni giorno effettivo del mese
+        for (let day = 1; day <= daysInMonth; day++) {
+            const cell = document.createElement("div"); 
+            cell.className = "calendar-day";
             
-            // Evidenzia il giorno odierno
-            if (isCM && d === tdy.getDate()) c.classList.add("today");
-            
-            // Cerca le note in scadenza in questo specifico giorno
-            const nTd = aN.filter(n => { 
-                const dt = new Date(n.dueDate); 
-                return dt.getFullYear() === y && dt.getMonth() === m && dt.getDate() === d; 
-            });
-            
-            let dH = ''; 
-            let tD = [];
-            
-            // Se ci sono note, genera i pallini e prepara il contenuto per il tooltip hover
-            if (nTd.length > 0) {
-                nTd.forEach(n => { 
-                    dH += `<div class="cal-dot ${n.priority}"></div>`; 
-                    tD.push(`• ${n.title}`); 
-                });
-                c.addEventListener("mouseenter", () => { 
-                    const t = document.getElementById("calTooltip"); 
-                    t.innerHTML = `<h4>Scadenze del ${d}</h4>${tD.join('<br>')}`; 
-                    t.classList.add("visible"); 
-                });
-                c.addEventListener("mouseleave", () => document.getElementById("calTooltip").classList.remove("visible"));
+            // Evidenzia la cella se è "Oggi"
+            if (isCurrentMonthAndYear && day === today.getDate()) {
+                cell.classList.add("today");
             }
             
-            c.innerHTML = `<div class="day-number">${d}</div><div class="day-dots">${dH}</div>`;
-            
-            // Se ci sono note, apri la modale di dettaglio al click sulla cella
-            c.addEventListener("click", () => { 
-                if (nTd.length > 0) this.openDayModal(nTd, d, mN[m], y); 
+            // Cerca tutte le note che scadono esattamente in questo giorno (Ignorando l'orario)
+            const notesToday = activeNotesWithDueDate.filter(note => { 
+                const noteDate = new Date(note.dueDate); 
+                return noteDate.getFullYear() === year && noteDate.getMonth() === month && noteDate.getDate() === day; 
             });
-            grid.appendChild(c);
+            
+            let dotsHTML = ''; 
+            let tooltipContent = [];
+            
+            // Se ci sono scadenze oggi:
+            if (notesToday.length > 0) {
+                notesToday.forEach(note => { 
+                    // Crea un pallino (dot) del colore della priorità
+                    dotsHTML += `<div class="cal-dot ${note.priority}"></div>`; 
+                    tooltipContent.push(`• ${note.title}`); 
+                });
+                
+                // Animazione Tooltip in Hover
+                cell.addEventListener("mouseenter", () => { 
+                    const tooltip = document.getElementById("calTooltip"); 
+                    tooltip.innerHTML = `<h4>Scadenze del ${day}</h4>${tooltipContent.join('<br>')}`; 
+                    tooltip.classList.add("visible"); 
+                });
+                cell.addEventListener("mouseleave", () => {
+                    document.getElementById("calTooltip").classList.remove("visible");
+                });
+            }
+            
+            // Inietta numero del giorno e pallini colorati nella cella
+            cell.innerHTML = `<div class="day-number">${day}</div><div class="day-dots">${dotsHTML}</div>`;
+            
+            // Se ci sono scadenze, abilita il click per aprire la modale dettagliata
+            cell.addEventListener("click", () => { 
+                if (notesToday.length > 0) {
+                    this.openDayModal(notesToday, day, monthNames[month], year); 
+                }
+            });
+
+            grid.appendChild(cell);
         }
     }
 
     /**
-     * Apre una finestra modale che elenca nel dettaglio tutte le note in scadenza
-     * nel giorno selezionato, permettendo di cliccarle per aprirle in modifica.
-     * @param {Array} notes - Array contenente gli oggetti Nota in scadenza quel giorno.
-     * @param {number} day - Il numero del giorno selezionato (es. 15).
-     * @param {string} monthName - Il nome testuale del mese (es. "Aprile").
-     * @param {number} year - L'anno corrente (es. 2024).
+     * Genera e mostra una modale (Popup) contenente l'elenco cliccabile 
+     * di tutte le note in scadenza nel giorno selezionato.
+     * @param {Array} notes - Array di oggetti Nota in scadenza per quel giorno.
+     * @param {number} day - Numero del giorno (es. 14).
+     * @param {string} monthName - Nome esteso del mese (es. "Giugno").
+     * @param {number} year - Anno di riferimento.
      */
     openDayModal(notes, day, monthName, year) {
         document.getElementById("dayNotesTitle").textContent = `Scadenze del ${day} ${monthName} ${year}`;
-        const lC = document.getElementById("dayNotesList"); 
-        lC.innerHTML = "";
+        const listContainer = document.getElementById("dayNotesList"); 
+        listContainer.innerHTML = "";
         
         notes.forEach(note => {
-            const i = document.createElement("div");
-            i.style.cssText = "padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card2); cursor: pointer; transition: border 0.2s, transform 0.1s; display: flex; flex-direction: column; gap: 4px;";
-            i.onmouseover = () => { i.style.borderColor = "var(--accent)"; i.style.transform = "translateY(-2px)"; };
-            i.onmouseout = () => { i.style.borderColor = "var(--border)"; i.style.transform = "translateY(0)"; };
+            const item = document.createElement("div");
             
-            let pI = note.priority === 'alta' ? '🔴' : (note.priority === 'media' ? '🟡' : '🟢'); 
-            let lI = note.pin ? '🔒 ' : '';
-            let tS = new Date(note.dueDate).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+            // Styling inline per la card della singola scadenza
+            item.style.cssText = "padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card2); cursor: pointer; transition: border 0.2s, transform 0.1s; display: flex; flex-direction: column; gap: 4px;";
             
-            i.innerHTML = `<strong style="color: var(--text-1); font-size: 15px;">${lI}${note.title}</strong><div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2);"><span>${pI} Priorità ${note.priority}</span><span>🕒 Ore: ${tS}</span></div>`;
+            // Effetto Hover interattivo
+            item.onmouseover = () => { 
+                item.style.borderColor = "var(--accent)"; 
+                item.style.transform = "translateY(-2px)"; 
+            };
+            item.onmouseout = () => { 
+                item.style.borderColor = "var(--border)"; 
+                item.style.transform = "translateY(0)"; 
+            };
             
-            i.addEventListener("click", (e) => {
-                e.stopPropagation(); // Evita conflitti di click
+            // Decorazioni: Emoji Priorità, Lucchetto se protetta, e formattazione orario
+            let priorityEmoji = note.priority === 'alta' ? '🔴' : (note.priority === 'media' ? '🟡' : '🟢'); 
+            let lockIcon = note.pin ? '🔒 ' : '';
+            let timeString = new Date(note.dueDate).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+            
+            // Struttura HTML dell'elemento lista
+            item.innerHTML = `
+                <strong style="color: var(--text-1); font-size: 15px;">${lockIcon}${note.title}</strong>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2);">
+                    <span>${priorityEmoji} Priorità ${note.priority}</span>
+                    <span>🕒 Ore: ${timeString}</span>
+                </div>
+            `;
+            
+            // Azione: Cliccando la card, chiude la modale calendario e apre la nota in modifica
+            item.addEventListener("click", (e) => {
+                e.stopPropagation(); 
                 document.getElementById("dayNotesModal").classList.add("hidden");
-                this.app.notes.openModalById(note.id); // Funzione unificata e sicura!
+                this.app.notes.openModalById(note.id); // Delega l'apertura al NotesManager
             });
-            lC.appendChild(i);
+
+            listContainer.appendChild(item);
         });
         
         document.getElementById("dayNotesModal").classList.remove("hidden");

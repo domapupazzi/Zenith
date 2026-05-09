@@ -4,12 +4,17 @@
  * le dimensioni dinamiche dell'interfaccia (Card, Font, Tabelle) e i toggle di sistema (Auto-Save, Auto-Destroy).
  */
 class SettingsManager {
+    /**
+     * Inizializza il manager delle impostazioni.
+     * @param {Object} app - L'istanza principale dell'applicazione (ZenithEngine).
+     */
     constructor(app) { 
         this.app = app; 
     }
 
     /**
-     * Carica il tema visivo salvato e applica le impostazioni iniziali senza mostrare notifiche.
+     * Carica il tema visivo salvato e applica le impostazioni iniziali all'avvio
+     * senza mostrare notifiche a schermo.
      */
     init() {
         if (!this.app.settings) this.app.settings = {};
@@ -26,7 +31,7 @@ class SettingsManager {
                            ? this.app.loggedUser.theme 
                            : (localStorage.getItem("landingTheme") || "dark");
         
-        // 🟢 FIX: Legge i temi dinamicamente dall'HTML ed evita errori
+        // Legge i temi dinamicamente dall'HTML per evitare errori
         const allThemes = Array.from(document.querySelectorAll('.theme-option'))
                                .map(el => el.dataset.theme ? el.dataset.theme.trim() : '')
                                .filter(t => t !== '');
@@ -34,6 +39,7 @@ class SettingsManager {
         if (allThemes.length > 0) {
             document.body.classList.remove(...allThemes);
         }
+        
         document.body.classList.add(savedTheme);
         if (typeof Utils !== 'undefined') Utils.fixThemeLegibility();
 
@@ -44,7 +50,8 @@ class SettingsManager {
     }
 
     /**
-     * Allinea fisicamente le posizioni degli slider e delle checkbox ai valori salvati in memoria.
+     * Allinea fisicamente le posizioni degli slider e delle checkbox visive 
+     * ai valori attuali salvati in memoria.
      */
     syncSliders() {
         if (!this.app.settings) return;
@@ -59,15 +66,18 @@ class SettingsManager {
         setVal("set-table-width", this.app.settings.tableWidth);
         setVal("set-table-pad-v", this.app.settings.tablePadV);
         setVal("set-table-pad-h", this.app.settings.tablePadH);
+        
         setCheck("exportIncludeDate", this.app.settings.exportIncludeDate ?? true);
         setCheck("exportIncludeTags", this.app.settings.exportIncludeTags ?? true);
-        
         setCheck("set-fast-delete", this.app.settings.fastDelete);
         setCheck("set-auto-save", this.app.settings.autoSave);
         setCheck("set-auto-destroy", this.app.settings.autoDestroy);
-        //setCheck("set-autocomplete", this.app.settings.enableAutocomplete ?? true);
     }
 
+    /**
+     * Inizializza tutti gli ascoltatori di eventi per i pannelli delle impostazioni,
+     * inclusi slider, checkbox, tab di navigazione e selettori dei temi.
+     */
     initEvents() {
         const inputIds = [
             "set-font-size", "set-font-family", "set-card-width",
@@ -93,7 +103,7 @@ class SettingsManager {
             });
         }
 
-        // --- GESTIONE TAB ---
+        // Gestione navigazione Tab principali
         document.querySelectorAll(".settings-nav-item").forEach(btn => {
             btn.addEventListener("click", () => {
                 const targetTab = btn.dataset.tab;
@@ -104,6 +114,7 @@ class SettingsManager {
             });
         });
 
+        // Gestione navigazione Sub-Tab
         document.querySelectorAll(".sub-nav-item").forEach(btn => {
             btn.addEventListener("click", () => {
                 const targetSub = btn.dataset.sub;
@@ -113,18 +124,18 @@ class SettingsManager {
                 document.getElementById(targetSub)?.classList.add("active");
             });
         });
-        // --- 🟢 FIX: L'UNICO GESTORE TEMI CORRETTO ---
-        // --- GESTIONE TEMI INTERNI ---
+
+        // Gestione applicazione Temi
         document.querySelectorAll(".theme-option").forEach(opt => {
             opt.addEventListener("click", () => {
                 const theme = opt.dataset.theme ? opt.dataset.theme.trim() : null;
                 const label = opt.dataset.label || theme;
                 
-                if (!theme) return; // Sicurezza extra
+                if (!theme) return; 
 
                 const body = document.body;
                 
-                // Pulisce i temi vecchi
+                // Rimuove tutti i temi precedenti
                 const allThemes = Array.from(document.querySelectorAll('.theme-option'))
                                        .map(el => el.dataset.theme ? el.dataset.theme.trim() : '')
                                        .filter(t => t !== '');
@@ -140,10 +151,10 @@ class SettingsManager {
                     this.app.plans.updateUI();
                 }
 
-                // 🟢 SALVATAGGIO NELL'ACCOUNT (Ora è DENTRO l'evento click!)
+                // Salvataggio permanente nell'account o in locale (se slegato)
                 if (this.app.loggedUser) {
                     this.app.loggedUser.theme = theme;
-                    this.app.saveUser(); // Salva e cripta subito
+                    this.app.saveUser(); 
                 } else {
                     localStorage.setItem("landingTheme", theme);
                 }
@@ -159,7 +170,9 @@ class SettingsManager {
     }
 
     /**
-     * Aggiorna in tempo reale la grafica dell'anteprima forzando l'override del CSS.
+     * Aggiorna in tempo reale la grafica della card/tabella di anteprima 
+     * forzando l'override del CSS (inline styles).
+     * @param {boolean} hasChanges - Indica se mostrare la barra fluttuante di salvataggio.
      */
     updatePreviewDOM(hasChanges = false) {
         if (!this.app.settings) this.app.settings = {};
@@ -179,12 +192,11 @@ class SettingsManager {
             ph: getVal("set-table-pad-h", 15)
         };
 
-        // 🔴 Abbiamo rimosso il blocco che modificava this.app.settings qui!
-
         const setLabel = (id, text) => {
             const el = document.getElementById(id);
             if (el) el.textContent = text;
         };
+        
         setLabel("val-font-size", val.fs);
         setLabel("val-card-width", val.cw);
         setLabel("val-card-height", val.ch);
@@ -192,7 +204,7 @@ class SettingsManager {
         setLabel("val-table-pad-v", val.pv);
         setLabel("val-table-pad-h", val.ph);
 
-        // 🟢 FIX PREVIEW: Applichiamo le modifiche visive temporanee
+        // Applica le modifiche visive temporanee agli elementi di anteprima
         const pText = document.getElementById("preview-text");
         if (pText) {
             pText.style.setProperty('font-size', val.fs + "px", "important");
@@ -220,18 +232,19 @@ class SettingsManager {
     }
 
     /**
-     * Applica e salva le impostazioni.
+     * Legge i valori attuali dei form, li salva permanentemente in memoria (appSettings)
+     * e applica le variabili CSS in modo globale a tutto il documento.
      * @param {boolean} silent - Se true, nasconde il toast di successo (usato all'avvio app).
      */
     apply(silent = false) {
         if (!this.app.settings) this.app.settings = {};
 
-        // 🟢 FIX: Leggiamo i valori dal DOM SOLO al momento della conferma!
         const getVal = (id) => document.getElementById(id)?.value;
         const getCheck = (id) => document.getElementById(id)?.checked;
 
+        // Costruisce il nuovo oggetto impostazioni fondendolo con quello vecchio
         this.app.settings = {
-            ...this.app.settings, // Mantiene eventuali impostazioni vecchie non presenti in questo form
+            ...this.app.settings, 
             fontSize: Number(getVal("set-font-size")) || 14,
             fontFamily: getVal("set-font-family") || 'system-ui, sans-serif',
             cardWidth: Number(getVal("set-card-width")) || 280,
@@ -242,13 +255,13 @@ class SettingsManager {
             fastDelete: getCheck("set-fast-delete") || false,
             autoSave: getCheck("set-auto-save") || false,
             autoDestroy: getCheck("set-auto-destroy") || false,
-            //enableAutocomplete: getCheck("set-autocomplete") ?? true,
-            exportIncludeDate: getCheck("exportIncludeDate") ?? true, // Salvataggio opzioni Export
-            exportIncludeTags: getCheck("exportIncludeTags") ?? true  // Salvataggio opzioni Export
+            exportIncludeDate: getCheck("exportIncludeDate") ?? true, 
+            exportIncludeTags: getCheck("exportIncludeTags") ?? true  
         };
 
         const root = document.documentElement;
         
+        // Applica le Variabili CSS Globali
         root.style.setProperty('--user-font-size', `${this.app.settings.fontSize}px`);
         root.style.setProperty('--user-font-family', this.app.settings.fontFamily);
         root.style.setProperty('--user-card-width', `${this.app.settings.cardWidth}px`);
@@ -267,10 +280,13 @@ class SettingsManager {
         if (bar) bar.classList.remove("show");
     }
 
+    /**
+     * Annulla le modifiche visive non salvate, riportando gli slider ai valori originari
+     * e ripristinando l'anteprima.
+     */
     revertPreview() {
         this.syncSliders();
         this.updatePreviewDOM(false);
         document.getElementById("settings-actions-bar")?.classList.remove("show");
-        //if (document.getElementById("set-autocomplete")) document.getElementById("set-autocomplete").checked = this.app.settings.enableAutocomplete;
     }
 }

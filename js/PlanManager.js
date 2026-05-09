@@ -1,12 +1,17 @@
 /**
  * @class PlanManager
- * @description Gestisce i piani di abbonamento e i limiti delle funzionalità.
+ * @description Gestisce i piani di abbonamento (Novizio vs Guru) e i limiti delle funzionalità.
+ * Si occupa di mostrare il paywall e bloccare le azioni non consentite tramite eventi in Capture Phase.
  */
 class PlanManager {
+    /**
+     * Inizializza il gestore dei piani configurando i limiti e i permessi di default.
+     * @param {Object} app - L'istanza principale dell'applicazione (ZenithEngine).
+     */
     constructor(app) {
         this.app = app;
         
-        // 📚 Dizionario dei Piani e dei Limiti
+        // Dizionario dei Piani e dei Limiti associati
         this.plans = {
             novizio: {
                 name: "Piano Novizio",
@@ -17,20 +22,26 @@ class PlanManager {
             guru: {
                 name: "Piano Guru 👑",
                 maxFolders: Infinity,
-                allowedThemes: 'all', // Sblocca tutto
+                allowedThemes: 'all', // Sblocca tutti i temi
                 features: { graph: true, settingsLayout: true, settingsEditor: true }
             }
         };
     }
 
-    // Recupera il piano attuale dell'utente
+    /**
+     * Recupera il piano attuale dell'utente loggato.
+     * @returns {Object} L'oggetto contenente le regole del piano attuale.
+     */
     get currentPlan() {
         if (!this.app.loggedUser) return this.plans.novizio;
         const planKey = this.app.loggedUser.plan || 'novizio';
         return this.plans[planKey] || this.plans.novizio;
     }
 
-    // Aggiorna l'interfaccia in base al piano (Mostra/Nasconde le corone)
+    /**
+     * Aggiorna le classi CSS del body per mostrare o nascondere elementi UI 
+     * specifici per i piani (es. icone con la corona per i contenuti premium).
+     */
     updateUI() {
         const body = document.body;
         body.classList.remove('plan-novizio', 'plan-guru'); 
@@ -40,7 +51,7 @@ class PlanManager {
     }
 
     /**
-     * Mostra la modale Paywall
+     * Mostra la modale del Paywall quando l'utente tenta di accedere a una funzione bloccata.
      */
     showPaywallMessage() {
         const modal = document.getElementById("paywallModal");
@@ -50,28 +61,28 @@ class PlanManager {
     }
 
     /**
-     * Inizializza gli eventi della modale Paywall
+     * Inizializza gli ascoltatori di eventi per la modale del Paywall,
+     * inclusa la logica di upgrade istantaneo al piano Guru.
      */
     initPaywallEvents() {
-        // Chiude la modale
+        // Chiusura della modale
         document.getElementById("closePaywallBtn")?.addEventListener("click", () => {
             document.getElementById("paywallModal").classList.add("hidden");
         });
 
-        // 🟢 LOGICA DI UPGRADE ISTANTANEO
+        // Logica di Upgrade Istantaneo
         document.getElementById("modalUpgradeToGuruBtn")?.addEventListener("click", () => {
             if (!this.app.loggedUser) return;
 
-            // 1. Applica il cambio piano nell'oggetto in RAM
+            // 1. Applica il cambio piano in RAM
             this.app.loggedUser.plan = 'guru';
 
-            // 2. 🟢 FIX CRITICO: Aggiorna la sessione attiva
-            // Senza questo, al reload l'app caricherebbe i vecchi dati dal sessionStorage
+            // 2. Aggiorna la sessione attiva per evitare reset al reload
             if (sessionStorage.getItem("zenith_volatile_user")) {
                 sessionStorage.setItem("zenith_volatile_user", JSON.stringify(this.app.loggedUser));
             }
 
-            // 3. Salva nel database principale (LocalStorage 'users')
+            // 3. Salva nel database principale (LocalStorage)
             this.app.saveUser();
 
             // 4. Feedback visivo
@@ -80,7 +91,7 @@ class PlanManager {
                 Utils.showToast("⚡ Evoluzione in corso... Benvenuto nel piano Guru!");
             }
 
-            // 5. Ricarica la pagina: ora ZenithEngine troverà i dati aggiornati ovunque
+            // 5. Ricarica la pagina per far leggere i nuovi dati a ZenithEngine
             setTimeout(() => {
                 location.reload();
             }, 1200);
@@ -88,21 +99,36 @@ class PlanManager {
     }
 
     // ==========================================
-    // 🛡️ CONTROLLI SPECIFICI
+    // 🛡️ CONTROLLI SPECIFICI DEI LIMITI
     // ==========================================
 
+    /**
+     * Verifica se una specifica funzionalità è sbloccata nel piano attuale.
+     * @param {string} featureId - L'ID della feature da controllare.
+     * @returns {boolean} True se consentito, False altrimenti (mostrando il paywall).
+     */
     checkFeature(featureId) {
         if (this.currentPlan.features[featureId]) return true;
         this.showPaywallMessage();
         return false;
     }
 
+    /**
+     * Verifica se l'utente può creare un'ulteriore cartella.
+     * @param {number} currentFolderCount - Il numero attuale di cartelle possedute.
+     * @returns {boolean} True se consentito, False altrimenti.
+     */
     canAddFolder(currentFolderCount) {
         if (currentFolderCount < this.currentPlan.maxFolders) return true;
         this.showPaywallMessage();
         return false;
     }
 
+    /**
+     * Verifica se l'utente ha il permesso di applicare un determinato tema.
+     * @param {string} themeId - L'ID del tema da controllare.
+     * @returns {boolean} True se consentito, False altrimenti.
+     */
     canUseTheme(themeId) {
         if (this.currentPlan.allowedThemes === 'all' || this.currentPlan.allowedThemes.includes(themeId)) return true;
         this.showPaywallMessage();
@@ -112,21 +138,26 @@ class PlanManager {
     // ==========================================
     // 🥷 L'INTERCETTATORE INVISIBILE (Capture Phase)
     // ==========================================
-    initSecurityHooks() {
-        this.updateUI(); // Etichetta la pagina al caricamento
-        this.initPaywallEvents(); // Attiva i tasti della modale
 
-        // 1. Blocca i Temi Premium
+    /**
+     * Applica gli "hook" di sicurezza intercettando i click in fase di cattura (Capture Phase).
+     * Questo permette di bloccare l'evento prima che raggiunga gli altri script se la funzione non è sbloccata.
+     */
+    initSecurityHooks() {
+        this.updateUI(); 
+        this.initPaywallEvents(); 
+
+        // 1. Blocco Temi Premium
         document.querySelectorAll('.theme-option').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const themeId = btn.dataset.theme;
                 if (!this.canUseTheme(themeId)) {
-                    e.stopPropagation(); // Ferma il click! Non arriverà al SettingsManager
+                    e.stopPropagation(); // Ferma la propagazione, non arriverà al SettingsManager
                 }
-            }, true); // 'true' = intercetta PRIMA degli altri script
+            }, true); // 'true' = Capture Phase
         });
 
-        // 2. Blocca i Tab delle impostazioni (Layout ed Editor)
+        // 2. Blocco Tab Impostazioni (Layout ed Editor)
         const blockedTabs = ['tab-layout', 'tab-editor'];
         document.querySelectorAll('.settings-nav-item').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -137,10 +168,10 @@ class PlanManager {
                         e.stopPropagation();
                     }
                 }
-            }, true);
+            }, true); // 'true' = Capture Phase
         });
 
-        // 3. Blocca la creazione di Cartelle (Workspaces) oltre le 3
+        // 3. Blocco Creazione Cartelle (Workspaces) oltre il limite
         const addWsBtn = document.getElementById('addWorkspaceBtn');
         if (addWsBtn) {
             addWsBtn.addEventListener('click', (e) => {
@@ -148,7 +179,7 @@ class PlanManager {
                 if (!this.canAddFolder(currentCount)) {
                     e.stopPropagation();
                 }
-            }, true);
+            }, true); // 'true' = Capture Phase
         }
     }
 }

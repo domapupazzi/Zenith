@@ -7,7 +7,7 @@ class Utils {
     
     /**
      * Converte il testo formattato in Markdown in HTML puro per la visualizzazione.
-     * Supporta grassetto, corsivo, blocchi di codice, codice inline e liste di task (checkbox).
+     * Supporta grassetto, corsivo, codice inline, liste di task (checkbox) e link bidirezionali.
      * @param {string} text - Il testo grezzo inserito dall'utente.
      * @returns {string} Stringa HTML formattata pronta per il DOM.
      */
@@ -16,12 +16,6 @@ class Utils {
         let html = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         
         // --- 1. ESTRAZIONE E PROTEZIONE DEL CODICE ---
-        /*const codeBlocks = [];
-        html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
-            codeBlocks.push(code);
-            return `___CODEBLOCK_${codeBlocks.length - 1}___`; // Segnaposto temporaneo
-        });*/
-
         const inlineCodes = [];
         html = html.replace(/`([^`\n]+)`/g, (match, code) => {
             inlineCodes.push(code);
@@ -29,25 +23,24 @@ class Utils {
         });
 
         // --- 2. FORMATTAZIONE DEL TESTO NORMALE ---
-        // Link Bidirezionali
+        // Link Bidirezionali (Wiki-Links)
         html = html.replace(/\[\[(.*?)\]\]/g, (match, title) => {
             const cleanTitle = title.trim();
             return `<a href="#" class="md-link" onclick="event.preventDefault(); app.notes.openModalByTitle('${cleanTitle.replace(/'/g, "\\'")}')">${cleanTitle}</a>`;
         });
 
+        // Grassetto e Corsivo
         html = html.replace(/\*\*(?=\S)([^\*]+?\S)\*\*/g, '<strong>$1</strong>');
         html = html.replace(/\*(?=\S)([^\*]+?\S)\*/g, '<em>$1</em>');
+        
+        // Liste di Task (Checkbox)
         html = html.replace(/\[x\]\s(.*)/g, '<label><input type="checkbox" class="md-checkbox" checked disabled> $1</label><br>');
         html = html.replace(/\[\s\]\s(.*)/g, '<label><input type="checkbox" class="md-checkbox" disabled> $1</label><br>');
         
-        // Ritorni a capo (ora applicati solo al testo, NON al codice)
+        // Ritorni a capo (applicati solo al testo, non al codice protetto)
         html = html.replace(/\n/g, '<br>');
 
         // --- 3. REINSERIMENTO DEL CODICE PROTETTO ---
-        html = html.replace(/___CODEBLOCK_(\d+)___/g, (match, index) => {
-            return `<pre class="md-code-block"><code>${codeBlocks[index]}</code></pre>`;
-        });
-        
         html = html.replace(/___INLINECODE_(\d+)___/g, (match, index) => {
             return `<span class="md-code">${inlineCodes[index]}</span>`;
         });
@@ -75,9 +68,11 @@ class Utils {
      */
     static showToast(msg) {
         const t = document.getElementById("toast");
-        t.textContent = msg; t.classList.add("show");
+        t.textContent = msg; 
+        t.classList.add("show");
         setTimeout(() => t.classList.remove("show"), 3000);
     }
+
     /**
      * Mostra la schermata di caricamento a schermo intero (loader) e la nasconde 
      * in automatico dopo 600 millisecondi, eseguendo un'eventuale funzione alla fine.
@@ -86,11 +81,18 @@ class Utils {
     static showLoader(cb) {
         const loader = document.getElementById("loader");
         loader.classList.add("visible");
-        setTimeout(() => { loader.classList.remove("visible"); if (cb) cb(); }, 600);
+        setTimeout(() => { 
+            loader.classList.remove("visible"); 
+            if (cb) cb(); 
+        }, 600);
     }
+
     /**
-     * 🟢 Evidenzia le parole cercate all'interno di una stringa HTML,
-     * ignorando intelligentemente il testo all'interno dei tag.
+     * Evidenzia le parole cercate all'interno di una stringa HTML,
+     * ignorando intelligentemente il testo all'interno dei tag <HTML>.
+     * @param {string} html - La stringa in cui cercare.
+     * @param {string} keyword - La parola chiave da evidenziare.
+     * @returns {string} L'HTML elaborato con i tag <mark> applicati.
      */
     static highlightText(html, keyword) {
         if (!keyword || !html) return html;
@@ -98,13 +100,12 @@ class Utils {
         const regex = new RegExp(`(?![^<]*>)(${safeKeyword})`, "gi");
         return html.replace(regex, '<mark style="background-color: #ffeb3b; color: #000; padding: 0 2px; border-radius: 3px; font-weight: bold;">$1</mark>');
     }
+
     /**
-     * ⚖️ Auto-Contrast Engine (WCAG)
-     * Controlla la leggibilità del tema corrente e corregge i testi in tempo reale se necessario.
-     */
-    /**
-     * ⚖️ Auto-Contrast Engine (WCAG) v2
-     * Controlla la leggibilità della pagina E dei pulsanti in tempo reale.
+     * Auto-Contrast Engine (WCAG v2)
+     * Controlla la leggibilità della pagina e dei pulsanti in tempo reale.
+     * Calcola la luminosità del tema corrente usando le formule WCAG e inverte
+     * automaticamente i colori del testo se non c'è abbastanza contrasto con lo sfondo.
      */
     static fixThemeLegibility() {
         const root = document.body;
@@ -161,23 +162,22 @@ class Utils {
         }
 
         // --- AZIONE 2: Fix Testo Pulsanti su Sfondo Accento ---
-        // I pulsanti sono bianchi di default. Se l'accento è troppo chiaro (es. Obsidian)...
         if (getContrast(lumAccent, lumWhite) < 3.0) {
-            root.style.setProperty('--text-on-accent', '#000000'); // ...diventano neri!
+            root.style.setProperty('--text-on-accent', '#000000'); // Contrasto insufficiente col bianco, usa il nero
         } else {
-            root.style.setProperty('--text-on-accent', '#ffffff'); // ...altrimenti restano bianchi
+            root.style.setProperty('--text-on-accent', '#ffffff'); // Resta bianco
         }
     }
+
     /**
-     * 🔒 Cripta una stringa di testo usando AES-256
-     * @param {string} text - Il testo in chiaro (es. il JSON delle note)
-     * @param {string} password - La Master Password dell'utente
-     * @returns {string} La stringa incomprensibile (Ciphertext)
+     * Cripta una stringa di testo usando lo standard industriale AES-256.
+     * @param {string} text - Il testo in chiaro (es. il JSON delle note).
+     * @param {string} password - La Master Password dell'utente.
+     * @returns {string|null} La stringa incomprensibile (Ciphertext) pronta da salvare, o null se fallisce.
      */
     static encrypt(text, password) {
         if (!text || !password) return null;
         try {
-            // Usa CryptoJS per criptare il testo con la password
             return CryptoJS.AES.encrypt(text, password).toString();
         } catch (error) {
             console.error("Errore durante la crittografia:", error);
@@ -186,19 +186,17 @@ class Utils {
     }
 
     /**
-     * 🔓 Decripta una stringa AES-256 riportandola in chiaro
-     * @param {string} cipherText - La stringa incomprensibile dal localStorage
-     * @param {string} password - La Master Password dell'utente
-     * @returns {string|null} Il testo in chiaro, o null se la password è errata
+     * Decripta una stringa AES-256 riportandola in chiaro.
+     * @param {string} cipherText - La stringa criptata archiviata in memoria.
+     * @param {string} password - La Master Password inserita dall'utente.
+     * @returns {string|null} Il testo in chiaro, o null se la password è errata o i dati sono corrotti.
      */
     static decrypt(cipherText, password) {
         if (!cipherText || !password) return null;
         try {
-            // Decripta e converte il risultato dal formato esadecimale a stringa (UTF-8)
             const bytes = CryptoJS.AES.decrypt(cipherText, password);
             const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
             
-            // Se la password è sbagliata, decryptedText sarà vuoto
             if (!decryptedText) return null;
             
             return decryptedText;

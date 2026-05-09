@@ -1,0 +1,233 @@
+/* ==========================================
+   THEMES.CSS
+   Dizionario di tutti i temi dell'applicazione
+   e delle variabili colore associate.
+   ========================================== */
+
+/* ── 1. PALETTE COLORI (Temi Globali) ── */
+
+/* --- 1. Dark (Scuro) --- */
+body.dark { --bg-page: #1a1a1e; --bg-sidebar: #141416; --bg-topbar: #141416; --bg-card: #222228; --bg-card2: #2a2a32; --bg-hover: #2e2e38; --bg-active: #32323e; --border: #2e2e38; --border2: #3a3a46; --text-1: #e2e2e8; --text-2: #9090a0; --text-3: #606070; --accent: #6c7af0; --accent-dim: #3a3d7a; --badge-ok: #2a4a2a; --badge-ok-t: #6ecf6e; --badge-warn: #4a3a1a; --badge-warn-t: #e0a840; --badge-err: #4a1e1e; --badge-err-t: #e06060; }
+
+/* --- 2. LIGHT (Pulito) --- */
+body.light { --bg-page: #f4f3f0; --bg-sidebar: #fafaf8; --bg-topbar: #fafaf8; --bg-card: #ffffff; --bg-card2: #f0efec; --bg-hover: #ededea; --bg-active: #e6e5e2; --border: #dddcda; --border2: #c8c7c4; --text-1: #1c1c20; --text-2: #6a6a74; --text-3: #a0a0a8; --accent: #4a56d8; --accent-dim: #d0d3f8; --badge-ok: #d6f0d6; --badge-ok-t: #2a6e2a; --badge-warn: #fbecd4; --badge-warn-t: #8a5c10; --badge-err: #fad8d8; --badge-err-t: #8a2020; }
+
+/* --- 3. NORDIC (Ghiaccio) --- */
+body.nordic { --bg-page: #2e3440; --bg-sidebar: #242933; --bg-topbar: #242933; --bg-card: #3b4252; --bg-card2: #434c5e; --bg-hover: #4c566a; --bg-active: #5e697d; --border: #434c5e; --border2: #4c566a; --text-1: #eceff4; --text-2: #d8dee9; --text-3: #a3be8c; --accent: #88c0d0; --accent-dim: #3b4252; --badge-ok: #4f6750; --badge-ok-t: #a3be8c; --badge-warn: #6b5a3e; --badge-warn-t: #ebcb8b; --badge-err: #6b3e3e; --badge-err-t: #bf616a; }
+
+/* --- 4. TOXIC (Neon/Hacker) --- */
+body.toxic { --bg-page: #000000; --bg-sidebar: #050505; --bg-topbar: #050505; --bg-card: #0a0a0a; --bg-card2: #111111; --bg-hover: #1a1a1a; --bg-active: #222222; --border: #1a1a1a; --border2: #333333; --text-1: #ffffff; --text-2: #ccff00; --text-3: #88aa00; --accent: #ccff00; --accent-dim: #223300; --badge-ok: #1a3300; --badge-ok-t: #ccff00; --badge-warn: #332b00; --badge-warn-t: #ffdd00; --badge-err: #330000; --badge-err-t: #ff4444; }
+
+/* --- 5. SEPIA (Libro Antico) --- */
+body.sepia { --bg-page: #f4ecd8; --bg-sidebar: #e8dfc4; --bg-topbar: #e8dfc4; --bg-card: #fdf6e3; --bg-card2: #eee8d5; --bg-hover: #e2d9b6; --bg-active: #dcd1a8; --border: #d3c6aa; --border2: #c5b896; --text-1: #5b4636; --text-2: #657b83; --text-3: #93a1a1; --accent: #b58900; --accent-dim: #eee8d5; --badge-ok: #dcfce7; --badge-ok-t: #166534; --badge-warn: #fef9c3; --badge-warn-t: #854d0e; --badge-err: #fee2e2; --badge-err-t: #991b1b; }
+
+/* --- 6. SYNTHWAVE (Anni 80) --- */
+body.synthwave { --bg-page: #2b0b3d; --bg-sidebar: #1a0626; --bg-topbar: #1a0626; --bg-card: #3d1452; --bg-card2: #4a1a63; --bg-hover: #5e237d; --bg-active: #722ba3; --border: #4a1a63; --border2: #5e237d; --text-1: #ff00ff; --text-2: #00ffff; --text-3: #bd93f9; --accent: #ff00ff; --accent-dim: #3d1452; --badge-ok: #004d4d; --badge-ok-t: #00ffff; --badge-warn: #4d4d00; --badge-warn-t: #ffff00; --badge-err: #4d0000; --badge-err-t: #ff0055; }
+
+/* --- 7. OBSIDIAN (Nero Assoluto) --- */
+body.obsidian { --bg-page: #050505; --bg-sidebar: #000000; --bg-topbar: #000000; --bg-card: #0f0f0f; --bg-card2: #141414; --bg-hover: #1c1c1c; --bg-active: #252525; --border: #222222; --border2: #333333; --text-1: #ffffff; --text-2: #a0a0a0; --text-3: #4a4a4a; --accent: #ffffff; --accent-dim: #222222; --badge-ok: #1a331a; --badge-ok-t: #4ade80; --badge-warn: #332b1a; --badge-warn-t: #fbbf24; --badge-err: #331a1a; --badge-err-t: #f87171; }
+
+/* --- 8. CYBERPUNK (Neon) --- */
+body.cyberpunk { --bg-page: #080211; --bg-sidebar: #05010b; --bg-topbar: #05010b; --bg-card: #15062a; --bg-card2: #1e093b; --bg-hover: #290d50; --bg-active: #3a1270; --border: #ff007f; --border2: #bf005f; --text-1: #00f0ff; --text-2: #b854d4; --text-3: #6b2d82; --accent: #ff007f; --accent-dim: #4a0025; --badge-ok: #003322; --badge-ok-t: #00ffaa; --badge-warn: #332200; --badge-warn-t: #ffaa00; --badge-err: #330011; --badge-err-t: #ff0044; }
+
+/* --- 9. FOREST (Natura) --- */
+body.forest { --bg-page: #232a22; --bg-sidebar: #1b211a; --bg-topbar: #1b211a; --bg-card: #2e382d; --bg-card2: #3a4639; --bg-hover: #465444; --bg-active: #546452; --border: #465444; --border2: #546452; --text-1: #e2e8dd; --text-2: #a5b39f; --text-3: #758270; --accent: #8b9c73; --accent-dim: #3a4430; --badge-ok: #203320; --badge-ok-t: #7bbf7b; --badge-warn: #332d1a; --badge-warn-t: #cca852; --badge-err: #331a1a; --badge-err-t: #cc5252; }
+
+/* --- 10. MIDNIGHT (Mezzanotte) --- */
+body.midnight { --bg-page: #060b19; --bg-sidebar: #03060d; --bg-topbar: #03060d; --bg-card: #0c152e; --bg-card2: #142145; --bg-hover: #1c2e5e; --bg-active: #263c78; --border: #1c2e5e; --border2: #263c78; --text-1: #e1e8f0; --text-2: #8a9fc4; --text-3: #4b5e85; --accent: #fcd581; --accent-dim: #544520; --badge-ok: #102923; --badge-ok-t: #47b598; --badge-warn: #2e200c; --badge-warn-t: #c48a33; --badge-err: #2e1014; --badge-err-t: #cc4558; }
+
+/* --- 11. SUNSET (Tramonto) --- */
+body.sunset { --bg-page: #2a1718; --bg-sidebar: #1f1011; --bg-topbar: #1f1011; --bg-card: #361f20; --bg-card2: #452829; --bg-hover: #573335; --bg-active: #693e40; --border: #573335; --border2: #693e40; --text-1: #fce8e8; --text-2: #d6989b; --text-3: #966164; --accent: #f06449; --accent-dim: #5c2016; --badge-ok: #1e3320; --badge-ok-t: #7bbf7b; --badge-warn: #3a2215; --badge-warn-t: #f5a623; --badge-err: #3a151b; --badge-err-t: #ff4a5a; }
+
+/* --- 12. DRACULA (Vampiro) --- */
+body.dracula { --bg-page: #1e1e2e; --bg-sidebar: #181825; --bg-topbar: #181825; --bg-card: #28283d; --bg-card2: #32324d; --bg-hover: #3d3d5c; --bg-active: #4d4d73; --border: #3d3d5c; --border2: #4d4d73; --text-1: #cdd6f4; --text-2: #a6adc8; --text-3: #6c7086; --accent: #cba6f7; --accent-dim: #4a3668; --badge-ok: #20332d; --badge-ok-t: #a6e3a1; --badge-warn: #332b20; --badge-warn-t: #f9e2af; --badge-err: #331e24; --badge-err-t: #f38ba8; }
+
+/* --- 13. LAVENDER (Lavanda) --- */
+body.lavender { --bg-page: #f8f4ff; --bg-sidebar: #efedfc; --bg-topbar: #efedfc; --bg-card: #ffffff; --bg-card2: #f3f1fe; --bg-hover: #e8e4f9; --bg-active: #dfd9f7; --border: #dcd6f7; --border2: #c9c1f0; --text-1: #4a3a89; --text-2: #6e5fb5; --text-3: #9b91d1; --accent: #9c27b0; --accent-dim: #f3e5f5; --badge-ok: #d1e7dd; --badge-ok-t: #0f5132; --badge-warn: #fff3cd; --badge-warn-t: #664d03; --badge-err: #f8d7da; --badge-err-t: #842029; }
+
+/* --- 14. OCEAN (Abissi) --- */
+body.ocean { --bg-page: #001219; --bg-sidebar: #001824; --bg-topbar: #001824; --bg-card: #00212f; --bg-card2: #00283a; --bg-hover: #003049; --bg-active: #005f73; --border: #005f73; --border2: #0a9396; --text-1: #e9d8a6; --text-2: #94d2bd; --text-3: #4a7c7a; --accent: #00dcff; --accent-dim: #003a4d; --badge-ok: #1a3d3a; --badge-ok-t: #50d0c0; --badge-warn: #3a2e10; --badge-warn-t: #e0c040; --badge-err: #3a1422; --badge-err-t: #f07080; }
+
+/* --- 15. SOLARIZED (Teal) --- */
+body.solarized { --bg-page: #002b36; --bg-sidebar: #073642; --bg-topbar: #073642; --bg-card: #002b36; --bg-card2: #073642; --bg-hover: #586e75; --bg-active: #2aa198; --border: #586e75; --border2: #657b83; --text-1: #839496; --text-2: #93a1a1; --text-3: #586e75; --accent: #b58900; --accent-dim: #073642; --badge-ok: #859900; --badge-ok-t: #fdf6e3; --badge-warn: #cb4b16; --badge-warn-t: #fdf6e3; --badge-err: #dc322f; --badge-err-t: #fdf6e3; }
+
+/* --- 16. COFFEE (Caffè) --- */
+body.coffee { --bg-page: #3e2723; --bg-sidebar: #2b1b17; --bg-topbar: #2b1b17; --bg-card: #4e342e; --bg-card2: #5d4037; --bg-hover: #6d4c41; --bg-active: #795548; --border: #6d4c41; --border2: #795548; --text-1: #d7ccc8; --text-2: #bcaaa4; --text-3: #8d6e63; --accent: #ffb300; --accent-dim: #3e2723; --badge-ok: #33691e; --badge-ok-t: #dcedc8; --badge-warn: #ff8f00; --badge-warn-t: #fff8e1; --badge-err: #bf360c; --badge-err-t: #fbe9e7; }
+
+/* --- 17. MINT (Menta) --- */
+body.mint { --bg-page: #121212; --bg-sidebar: #1e1e1e; --bg-topbar: #1e1e1e; --bg-card: #2c2c2c; --bg-card2: #383838; --bg-hover: #454545; --bg-active: #00bfa5; --border: #454545; --border2: #555555; --text-1: #e0e0e0; --text-2: #b0b0b0; --text-3: #757575; --accent: #00e676; --accent-dim: #1e1e1e; --badge-ok: #00c853; --badge-ok-t: #e8f5e9; --badge-warn: #ffd600; --badge-warn-t: #fffde7; --badge-err: #d50000; --badge-err-t: #ffebee; }
+
+/* --- 18. CHERRY (Ciliegio) --- */
+body.cherry { --bg-page: #fff0f5; --bg-sidebar: #ffe4e1; --bg-topbar: #ffe4e1; --bg-card: #ffffff; --bg-card2: #fff5f8; --bg-hover: #ffc0cb; --bg-active: #ffb6c1; --border: #ffb6c1; --border2: #ff69b4; --text-1: #4a148c; --text-2: #880e4f; --text-3: #ad1457; --accent: #e91e63; --accent-dim: #fce4ec; --badge-ok: #c8e6c9; --badge-ok-t: #1b5e20; --badge-warn: #ffecb3; --badge-warn-t: #f57f17; --badge-err: #ffcdd2; --badge-err-t: #b71c1c; }
+
+/* --- 19. MATRIX (Hacker) --- */
+body.matrix { --bg-page: #000000; --bg-sidebar: #050505; --bg-topbar: #050505; --bg-card: #0a0a0a; --bg-card2: #111111; --bg-hover: #1a1a1a; --bg-active: #003300; --border: #00ff00; --border2: #00cc00; --text-1: #00ff00; --text-2: #00cc00; --text-3: #009900; --accent: #00ff00; --accent-dim: #002200; --badge-ok: #003300; --badge-ok-t: #00ff00; --badge-warn: #333300; --badge-warn-t: #ffff00; --badge-err: #330000; --badge-err-t: #ff0000; }
+
+/* --- 20. GRADIENT (Spazio) --- */
+body.gradient { --bg-page: #0d1b3e; --bg-sidebar: #0a1530; --bg-topbar: #0a1530; --bg-card: #132045; --bg-card2: #1a2a56; --bg-hover: #1e3060; --bg-active: #233668; --border: #1e3060; --border2: #2a4080; --text-1: #dce8ff; --text-2: #7a9acc; --text-3: #4a6a9a; --accent: #4d9cf0; --accent-dim: #1a3f6e; --badge-ok: #1a3d3a; --badge-ok-t: #50d0c0; --badge-warn: #3a2e10; --badge-warn-t: #e0c040; --badge-err: #3a1422; --badge-err-t: #f07080; }
+
+/* --- 21. ACID GREEN --- */
+body.acid-green { --bg-page: #001a00; --bg-sidebar: #000f00; --bg-topbar: #000f00; --bg-card: #003300; --bg-card2: #004d00; --bg-hover: #006600; --bg-active: #008000; --border: #004d00; --border2: #006600; --text-1: #ccffcc; --text-2: #99ff99; --text-3: #66cc66; --accent: #33ff33; --accent-dim: #003300; --badge-ok: #1a331a; --badge-ok-t: #33ff33; --badge-warn: #332b1a; --badge-warn-t: #ffcc00; --badge-err: #331a1a; --badge-err-t: #ff4444; }
+
+/* --- 22. ROYAL BLUE --- */
+body.royal-blue { --bg-page: #001f3f; --bg-sidebar: #001020; --bg-topbar: #001020; --bg-card: #003366; --bg-card2: #004080; --bg-hover: #0050a0; --bg-active: #0060c0; --border: #004080; --border2: #0050a0; --text-1: #ffffff; --text-2: #bbddff; --text-3: #77aadd; --accent: #7fdbff; --accent-dim: #003366; --badge-ok: #064e3b; --badge-ok-t: #34d399; --badge-warn: #78350f; --badge-warn-t: #fbbf24; --badge-err: #7f1d1d; --badge-err-t: #f87171; }
+
+/* --- 23. RUBY RED --- */
+body.ruby-red { --bg-page: #2a0000; --bg-sidebar: #1a0000; --bg-topbar: #1a0000; --bg-card: #550000; --bg-card2: #770000; --bg-hover: #990000; --bg-active: #bb0000; --border: #770000; --border2: #990000; --text-1: #ffffff; --text-2: #ffcccc; --text-3: #cc9999; --accent: #ff4136; --accent-dim: #550000; --badge-ok: #064e3b; --badge-ok-t: #4ade80; --badge-warn: #451a03; --badge-warn-t: #fbbf24; --badge-err: #450a0a; --badge-err-t: #f87171; }
+
+/* --- 24. SLATE GRAY --- */
+body.slate-gray { --bg-page: #2c3e50; --bg-sidebar: #1a252f; --bg-topbar: #1a252f; --bg-card: #34495e; --bg-card2: #455a64; --bg-hover: #546e7a; --bg-active: #607d8b; --border: #455a64; --border2: #546e7a; --text-1: #ecf0f1; --text-2: #bdc3c7; --text-3: #95a5a6; --accent: #95a5a6; --accent-dim: #34495e; --badge-ok: #2e4a3a; --badge-ok-t: #a5d6a7; --badge-warn: #4a3e2e; --badge-warn-t: #ffe082; --badge-err: #4a2e2e; --badge-err-t: #ef9a9a; }
+
+/* --- 25. SUNSET GOLD --- */
+body.sunset-gold { --bg-page: #3d2b1f; --bg-sidebar: #2a1d15; --bg-topbar: #2a1d15; --bg-card: #5c4033; --bg-card2: #705040; --bg-hover: #8b6050; --bg-active: #a07060; --border: #705040; --border2: #8b6050; --text-1: #fff8e7; --text-2: #e0ccb0; --text-3: #a08060; --accent: #ffb703; --accent-dim: #5c4033; --badge-ok: #2d4a22; --badge-ok-t: #99ffaa; --badge-warn: #4a3d11; --badge-warn-t: #ffea00; --badge-err: #4a1a11; --badge-err-t: #ff6644; }
+
+/* --- 26. MINT FRESH --- */
+body.mint-fresh { --bg-page: #e0f7fa; --bg-sidebar: #b2ebf2; --bg-topbar: #b2ebf2; --bg-card: #ffffff; --bg-card2: #f0ffff; --bg-hover: #e0f2f1; --bg-active: #b2dfdb; --border: #b2ebf2; --border2: #80cbc4; --text-1: #004d40; --text-2: #00796b; --text-3: #4db6ac; --accent: #009688; --accent-dim: #b2dfdb; --badge-ok: #dcfce7; --badge-ok-t: #166534; --badge-warn: #fef9c3; --badge-warn-t: #854d0e; --badge-err: #fee2e2; --badge-err-t: #991b1b; }
+
+/* --- 27. ELECTRIC PURPLE --- */
+body.electric-purple { --bg-page: #10002b; --bg-sidebar: #05000a; --bg-topbar: #05000a; --bg-card: #240046; --bg-card2: #3c096c; --bg-hover: #5a189a; --bg-active: #7b2cbf; --border: #3c096c; --border2: #5a189a; --text-1: #e0aaff; --text-2: #c77dff; --text-3: #9d4edd; --accent: #9d4edd; --accent-dim: #240046; --badge-ok: #1a0033; --badge-ok-t: #7b2cbf; --badge-warn: #332200; --badge-warn-t: #ffcc00; --badge-err: #330000; --badge-err-t: #ff00ff; }
+
+/* --- 28. COFFEE SHOP --- */
+body.coffee-shop { --bg-page: #1a100c; --bg-sidebar: #120b08; --bg-topbar: #120b08; --bg-card: #241611; --bg-card2: #2e1d16; --bg-hover: #3a251c; --bg-active: #4a2f24; --border: #3a251c; --border2: #4a2f24; --text-1: #e8dcc5; --text-2: #c5b299; --text-3: #8c7761; --accent: #d4a373; --accent-dim: #241611; --badge-ok: #172e17; --badge-ok-t: #81c784; --badge-warn: #33230a; --badge-warn-t: #ffd54f; --badge-err: #331212; --badge-err-t: #e57373; }
+
+/* --- 29. OCEAN DEEP --- */
+body.ocean-deep { --bg-page: #001c24; --bg-sidebar: #000a0d; --bg-topbar: #000a0d; --bg-card: #003340; --bg-card2: #004d5f; --bg-hover: #006677; --bg-active: #008899; --border: #004d5f; --border2: #006677; --text-1: #cceeff; --text-2: #88d4e4; --text-3: #44a5b8; --accent: #00d2ff; --accent-dim: #003340; --badge-ok: #064e3b; --badge-ok-t: #34d399; --badge-warn: #78350f; --badge-warn-t: #fbbf24; --badge-err: #7f1d1d; --badge-err-t: #f87171; }
+
+/* --- 30. DESERT SAND --- */
+body.desert-sand { --bg-page: #fdf5e6; --bg-sidebar: #f3e5d8; --bg-topbar: #f3e5d8; --bg-card: #ffffff; --bg-card2: #fcf6eb; --bg-hover: #f0e0cc; --bg-active: #e6ceb3; --border: #e6ceb3; --border2: #d8b898; --text-1: #2b1c10; --text-2: #5c4332; --text-3: #8f725c; --accent: #d62828; --accent-dim: #fceceb; --badge-ok: #dcfce7; --badge-ok-t: #166534; --badge-warn: #fef9c3; --badge-warn-t: #854d0e; --badge-err: #fee2e2; --badge-err-t: #991b1b; }
+
+/* --- 31. SAKURA (Delicato/Zen) --- */
+body.sakura { --bg-page: #fffafb; --bg-sidebar: #fdf2f4; --bg-topbar: #fdf2f4; --bg-card: #ffffff; --bg-card2: #fcf0f2; --bg-hover: #fae1e5; --bg-active: #f7ced5; --border: #f7ced5; --border2: #f2a6b4; --text-1: #4a3739; --text-2: #8c6e71; --text-3: #b89a9d; --accent: #ff8fa3; --accent-dim: #fce4e8; --badge-ok: #dcfce7; --badge-ok-t: #166534; --badge-warn: #fef9c3; --badge-warn-t: #854d0e; --badge-err: #fee2e2; --badge-err-t: #991b1b; }
+
+/* --- 32. ICEBERG --- */
+body.iceberg { --bg-page: #f0f8ff; --bg-sidebar: #e6f0ff; --bg-topbar: #e6f0ff; --bg-card: #ffffff; --bg-card2: #d1e7ff; --bg-hover: #b3d7ff; --bg-active: #80bfff; --border: #b3d7ff; --border2: #80bfff; --text-1: #003366; --text-2: #0055aa; --text-3: #77aadd; --accent: #0055aa; --accent-dim: #d1e7ff; --badge-ok: #e8f5e9; --badge-ok-t: #2e7d32; --badge-warn: #fff8e1; --badge-warn-t: #f57f17; --badge-err: #ffebee; --badge-err-t: #c62828; }
+
+/* --- 33. VOLCANO --- */
+body.volcano { --bg-page: #1a0000; --bg-sidebar: #0d0000; --bg-topbar: #0d0000; --bg-card: #330000; --bg-card2: #4d0000; --bg-hover: #660000; --bg-active: #800000; --border: #660000; --border2: #800000; --text-1: #ffcc99; --text-2: #ff9966; --text-3: #ff6633; --accent: #ff4500; --accent-dim: #330000; --badge-ok: #1a331a; --badge-ok-t: #4ade80; --badge-warn: #451a03; --badge-warn-t: #fbbf24; --badge-err: #450a0a; --badge-err-t: #f87171; }
+
+/* --- 34. EMERALD --- */
+body.emerald { --bg-page: #021a0f; --bg-sidebar: #010d07; --bg-topbar: #010d07; --bg-card: #04331e; --bg-card2: #064d2d; --bg-hover: #08663c; --bg-active: #0a804a; --border: #064d2d; --border2: #08663c; --text-1: #e0f2f1; --text-2: #80cbc4; --text-3: #4db6ac; --accent: #2e7d32; --accent-dim: #04331e; --badge-ok: #1b5e20; --badge-ok-t: #a5d6a7; --badge-warn: #453603; --badge-warn-t: #ffd54f; --badge-err: #450a0a; --badge-err-t: #ef5350; }
+
+/* --- 35. COPPER --- */
+body.copper { --bg-page: #2b1d1a; --bg-sidebar: #1a110f; --bg-topbar: #1a110f; --bg-card: #452f2a; --bg-card2: #5c3e37; --bg-hover: #734d45; --bg-active: #8b5d53; --border: #5c3e37; --border2: #734d45; --text-1: #e6d7d3; --text-2: #c4a49c; --text-3: #997a72; --accent: #b87333; --accent-dim: #452f2a; --badge-ok: #2d4a22; --badge-ok-t: #99ffaa; --badge-warn: #4a3d11; --badge-warn-t: #ffea00; --badge-err: #4a1a11; --badge-err-t: #ff6644; }
+
+/* --- 36. STARLIGHT --- */
+body.starlight { --bg-page: #0b0d17; --bg-sidebar: #05060a; --bg-topbar: #05060a; --bg-card: #161b22; --bg-card2: #1f242d; --bg-hover: #29313d; --bg-active: #343d4d; --border: #1f242d; --border2: #343d4d; --text-1: #d1d5da; --text-2: #959da5; --text-3: #586069; --accent: #f1e05a; --accent-dim: #343d4d; --badge-ok: #064e3b; --badge-ok-t: #4ade80; --badge-warn: #451a03; --badge-warn-t: #fbbf24; --badge-err: #450a0a; --badge-err-t: #f87171; }
+
+/* --- 37. LAVA --- */
+body.lava { --bg-page: #1f0a0a; --bg-sidebar: #0f0505; --bg-topbar: #0f0505; --bg-card: #3d1414; --bg-card2: #5c1f1f; --bg-hover: #7a2929; --bg-active: #993333; --border: #5c1f1f; --border2: #7a2929; --text-1: #ffedd5; --text-2: #fdba74; --text-3: #ea580c; --accent: #ea580c; --accent-dim: #3d1414; --badge-ok: #1e3320; --badge-ok-t: #4ade80; --badge-warn: #451a03; --badge-warn-t: #fbbf24; --badge-err: #450a0a; --badge-err-t: #f87171; }
+
+/* --- 38. FOREST MOSS --- */
+body.moss { --bg-page: #1b261b; --bg-sidebar: #0f150f; --bg-topbar: #0f150f; --bg-card: #2d3e2d; --bg-card2: #3e563e; --bg-hover: #506e50; --bg-active: #618761; --border: #3e563e; --border2: #506e50; --text-1: #d4e0d4; --text-2: #a1b8a1; --text-3: #6d856d; --accent: #6d856d; --accent-dim: #2d3e2d; --badge-ok: #2d4a22; --badge-ok-t: #a5d6a7; --badge-warn: #4a3e2e; --badge-warn-t: #ffe082; --badge-err: #4a2e2e; --badge-err-t: #ef9a9a; }
+
+/* --- 39. PEACH FUZZ --- */
+body.peach { --bg-page: #fff5eb; --bg-sidebar: #ffeadd; --bg-topbar: #ffeadd; --bg-card: #ffffff; --bg-card2: #ffedd5; --bg-hover: #fed7aa; --bg-active: #fdba74; --border: #fed7aa; --border2: #fdba74; --text-1: #431407; --text-2: #9a3412; --text-3: #c2410c; --accent: #fb923c; --accent-dim: #ffedd5; --badge-ok: #d1e7dd; --badge-ok-t: #1b5e20; --badge-warn: #ffecb3; --badge-warn-t: #854d0e; --badge-err: #f8d7da; --badge-err-t: #842029; }
+
+/* --- 40. MOONLIGHT --- */
+body.moonlight { --bg-page: #1a1c26; --bg-sidebar: #0f1116; --bg-topbar: #0f1116; --bg-card: #252833; --bg-card2: #2d3142; --bg-hover: #3d4359; --bg-active: #4a516d; --border: #2d3142; --border2: #3d4359; --text-1: #d8dee9; --text-2: #8892b0; --text-3: #4a5568; --accent: #8892b0; --accent-dim: #252833; --badge-ok: #1e332d; --badge-ok-t: #4ade80; --badge-warn: #332b1a; --badge-warn-t: #fbbf24; --badge-err: #331a1a; --badge-err-t: #f87171; }
+
+/* --- 41. ROSE GOLD --- */
+body.rosegold { --bg-page: #2d2424; --bg-sidebar: #1e1a1a; --bg-topbar: #1e1a1a; --bg-card: #3d3333; --bg-card2: #4a3f3f; --bg-hover: #5c4d4d; --bg-active: #6e5a5a; --border: #5c4d4d; --border2: #6e5a5a; --text-1: #f7e2e2; --text-2: #e0caca; --text-3: #b08968; --accent: #e5989b; --accent-dim: #4a3333; --badge-ok: #2d4a22; --badge-ok-t: #a5d6a7; --badge-warn: #4a3e2e; --badge-warn-t: #ffe082; --badge-err: #4a2e2e; --badge-err-t: #ef9a9a; }
+
+/* --- 42. SAHARA --- */
+body.sahara { --bg-page: #261c15; --bg-sidebar: #1a130f; --bg-topbar: #1a130f; --bg-card: #36281e; --bg-card2: #423226; --bg-hover: #543f30; --bg-active: #664d3b; --border: #423226; --border2: #543f30; --text-1: #f4d35e; --text-2: #ee964b; --text-3: #9b7041; --accent: #f4d35e; --accent-dim: #36281e; --badge-ok: #1a331a; --badge-ok-t: #ccff00; --badge-warn: #332b00; --badge-warn-t: #ffdd00; --badge-err: #330000; --badge-err-t: #ff4444; }
+
+/* --- 43. AMETHYST --- */
+body.amethyst { --bg-page: #1a0a2e; --bg-sidebar: #120621; --bg-topbar: #120621; --bg-card: #2a1245; --bg-card2: #341854; --bg-hover: #432269; --bg-active: #522b82; --border: #341854; --border2: #432269; --text-1: #e0b0ff; --text-2: #9d50bb; --text-3: #6e48aa; --accent: #9d50bb; --accent-dim: #2a1245; --badge-ok: #1a0033; --badge-ok-t: #7b2cbf; --badge-warn: #332200; --badge-warn-t: #ffcc00; --badge-err: #330000; --badge-err-t: #ff00ff; }
+
+/* --- 44. ATLANTIS --- */
+body.atlantis { --bg-page: #001219; --bg-sidebar: #000b0f; --bg-topbar: #000b0f; --bg-card: #001d26; --bg-card2: #002633; --bg-hover: #003340; --bg-active: #004d5e; --border: #002633; --border2: #003340; --text-1: #94d2bd; --text-2: #0a9396; --text-3: #005f73; --accent: #94d2bd; --accent-dim: #001d26; --badge-ok: #064e3b; --badge-ok-t: #34d399; --badge-warn: #78350f; --badge-warn-t: #fbbf24; --badge-err: #7f1d1d; --badge-err-t: #f87171; }
+
+/* --- 45. TOSCANA (Toni della Terra) --- */
+body.toscana { --bg-page: #f2e8cf; --bg-sidebar: #e5ccae; --bg-topbar: #e5ccae; --bg-card: #fdfaf0; --bg-card2: #f2e8cf; --bg-hover: #d4a373; --bg-active: #bc6c25; --border: #bc6c25; --border2: #8b5e34; --text-1: #283618; --text-2: #606c38; --text-3: #a3b18a; --accent: #bc6c25; --accent-dim: #f2e8cf; --badge-ok: #d6f0d6; --badge-ok-t: #2a6e2a; --badge-warn: #fbecd4; --badge-warn-t: #8a5c10; --badge-err: #fad8d8; --badge-err-t: #8a2020; }
+
+/* --- 46. BLUEPRINT (Architettonico) --- */
+body.blueprint { --bg-page: #1a3a6c; --bg-sidebar: #122a50; --bg-topbar: #122a50; --bg-card: #1f4287; --bg-card2: #27496d; --bg-hover: #0078aa; --bg-active: #00a8cc; --border: #00a8cc; --border2: #00d1ff; --text-1: #ffffff; --text-2: #a5d8ff; --text-3: #00d1ff; --accent: #00d1ff; --accent-dim: #1a3a6c; --badge-ok: #1a331a; --badge-ok-t: #4ade80; --badge-warn: #332b1a; --badge-warn-t: #fbbf24; --badge-err: #331a1a; --badge-err-t: #f87171; }
+
+/* --- 47. CYBER GOLD (Lusso High-Tech) --- */
+body.cybergold { --bg-page: #0d0d0d; --bg-sidebar: #050505; --bg-topbar: #050505; --bg-card: #141414; --bg-card2: #1a1a1a; --bg-hover: #262626; --bg-active: #333333; --border: #d4af37; --border2: #b8860b; --text-1: #ffffff; --text-2: #d4af37; --text-3: #8b6b00; --accent: #ffd700; --accent-dim: #1a1a1a; --badge-ok: #1a3300; --badge-ok-t: #ccff00; --badge-warn: #332b00; --badge-warn-t: #ffdd00; --badge-err: #330000; --badge-err-t: #ff4444; }
+
+.theme-dot { width: 12px; height: 12px; border-radius: 50%; }
+.theme-dot.dark { background: #32323e; border: 1px solid #6c7af0; }
+.theme-dot.light { background: #f4f3f0; border: 1px solid #4a56d8; }
+.theme-dot.gradient { background: linear-gradient(135deg, #0d1b3e, #4d9cf0); }
+.theme-dot.cyberpunk { background: #15062a; border: 1px solid #ff007f; }
+.theme-dot.forest { background: #2e382d; border: 1px solid #8b9c73; }
+.theme-dot.midnight { background: #0c152e; border: 1px solid #fcd581; }
+.theme-dot.sunset { background: #361f20; border: 1px solid #f06449; }
+.theme-dot.dracula { background: #28283d; border: 1px solid #cba6f7; }
+.theme-dot.lavender { background: #9c27b0; border: 1px solid #4a3a89; }
+.theme-dot.ocean { background: #00dcff; border: 1px solid #005f73; }
+.theme-dot.solarized { background: #002b36; border: 1px solid #b58900; }
+.theme-dot.coffee { background: #4e342e; border: 1px solid #ffb300; }
+.theme-dot.mint { background: #2c2c2c; border: 1px solid #00e676; }
+.theme-dot.cherry { background: #fff0f5; border: 1px solid #e91e63; }
+.theme-dot.matrix { background: #000000; border: 1px solid #00ff00; }
+.theme-dot.nordic { background: #2e3440; border: 1px solid #88c0d0; }
+.theme-dot.rosegold { background: #2d2424; border: 1px solid #e5989b; }
+.theme-dot.toxic { background: #000000; border: 1px solid #ccff00; }
+.theme-dot.sepia { background: #f4ecd8; border: 1px solid #b58900; }
+.theme-dot.synthwave { background: #2b0b3d; border: 1px solid #ff00ff; }
+.theme-dot.obsidian { background: #050505; border: 1px solid #ffffff; }
+.theme-dot.sahara { background: #261c15; border: 1px solid #f4d35e; }
+.theme-dot.amethyst { background: #1a0a2e; border: 1px solid #9d50bb; }
+.theme-dot.atlantis { background: #001219; border: 1px solid #94d2bd; }
+.theme-dot.acid-green { background: #001a00; border: 1px solid #33ff33; }
+.theme-dot.royal-blue { background: #001f3f; border: 1px solid #7fdbff; }
+.theme-dot.ruby-red { background: #2a0000; border: 1px solid #ff4136; }
+.theme-dot.slate-gray { background: #2c3e50; border: 1px solid #95a5a6; }
+.theme-dot.sunset-gold { background: #3d2b1f; border: 1px solid #ffb703; }
+.theme-dot.mint-fresh { background: #e0f7fa; border: 1px solid #009688; }
+.theme-dot.electric-purple { background: #10002b; border: 1px solid #9d4edd; }
+.theme-dot.coffee-shop { background: #1a100c; border: 1px solid #d4a373; }
+.theme-dot.ocean-deep { background: #001c24; border: 1px solid #00d2ff; }
+.theme-dot.desert-sand { background: #fdf5e6; border: 1px solid #d62828; }
+.theme-dot.sakura { background: #fffafb; border: 1px solid #ff8fa3; }
+.theme-dot.iceberg { background: #f0f8ff; border: 1px solid #0055aa; }
+.theme-dot.volcano { background: #1a0000; border: 1px solid #ff4500; }
+.theme-dot.emerald { background: #021a0f; border: 1px solid #2e7d32; }
+.theme-dot.copper { background: #2b1d1a; border: 1px solid #b87333; }
+.theme-dot.starlight { background: #0b0d17; border: 1px solid #f1e05a; }
+.theme-dot.lava { background: #1f0a0a; border: 1px solid #ea580c; }
+.theme-dot.moss { background: #1b261b; border: 1px solid #6d856d; }
+.theme-dot.peach { background: #fff5eb; border: 1px solid #fb923c; }
+.theme-dot.moonlight { background: #1a1c26; border: 1px solid #8892b0; }
+.theme-dot.toscana { background: #bc6c25; border: 1px solid #283618; }
+.theme-dot.blueprint { background: #1a3a6c; border: 1px solid #00d1ff; }
+.theme-dot.cybergold { background: #0d0d0d; border: 1px solid #ffd700; }
+
+/* ── 2. MENU DI SELEZIONE DEI TEMI (UI) ── */
+
+.theme-grid-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.theme-option {
+    padding: 10px;
+    background: var(--bg-card2);
+    border: 2px solid transparent !important; /* Previene scatti visivi durante l'hover */
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.theme-option:hover {
+    transform: translateY(-4px) scale(1.02);
+    background: var(--bg-hover) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 15px var(--accent-dim);
+    z-index: 10;
+}
+
+.theme-option.active {
+    border-color: var(--accent) !important;
+    background: var(--bg-active) !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}

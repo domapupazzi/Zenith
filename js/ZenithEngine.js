@@ -11,7 +11,7 @@ class ZenithEngine {
     constructor() {
         this.users = JSON.parse(localStorage.getItem("users")) || [];
 
-        // 🟢 FIX: Cerchiamo l'utente in ordine di importanza:
+        // Ordine di importanza per il login:
         // 1. Sessione volatile (Refresh) 2. Sessione lunga (Rimani collegato) 3. Vecchio salvataggio (Legacy)
         let user = JSON.parse(sessionStorage.getItem("zenith_volatile_user"));
 
@@ -22,26 +22,27 @@ class ZenithEngine {
             }
         }
 
-        // Salvataggio di emergenza se gli altri falliscono (per evitare il blocco sulla landing)
+        // Salvataggio di emergenza se gli altri falliscono
         if (!user) {
             user = JSON.parse(localStorage.getItem("loggedUser"));
         }
 
         this.loggedUser = user;
+        
+        // Gestione di sicurezza per note criptate in RAM
         if (this.loggedUser && typeof this.loggedUser.notes === 'string') {
             const ramKey = sessionStorage.getItem("zenith_master_key");
 
             if (ramKey) {
-                // Sblocca i dati prima che i manager crashino!
                 this.unlockVault(ramKey);
             } else {
-                // Sicurezza estrema: Se l'utente ha chiuso la scheda e riaperto, non c'è la chiave.
-                // Svuotiamo le note in RAM per evitare il crash. (Creeremo la Lock Screen nel prossimo step)
+                // Sicurezza estrema: svuota i dati temporaneamente se manca la chiave in RAM
                 this.lockedNotesData = this.loggedUser.notes;
                 this.loggedUser.notes = [];
                 this.loggedUser.folders = [];
             }
         }
+        
         this.isStarted = false;
         this.graph = new GraphManager(this);
         this.tagManager = new TagManager(this);
@@ -49,12 +50,11 @@ class ZenithEngine {
         this.gamification = new GamificationManager(this);
         this.plans = new PlanManager(this);
         this.exportManager = new ExportManager(this);
-        this.masterKey = null; // 🔑 La chiave vive solo qui (RAM) e mai nel localStorage
+        this.masterKey = null; // La chiave vive solo in RAM
 
         const defaultSettings = {
             fontSize: 14, fontFamily: "system-ui, sans-serif", cardWidth: 280, cardHeight: 320,
             fastDelete: false, autoDestroy: false, autoSave: false,
-            //enableAutocomplete: true,
             viewMode: 'grid', tablePadV: 12, tablePadH: 15, tableWidth: 100
         };
 
@@ -68,22 +68,17 @@ class ZenithEngine {
         this.notes = new NotesManager(this);
 
         this.timerInterval = null;
-        // 🟢 FIX MOBILE: Gestione Sidebar a comparsa
+        
+        // Gestione Sidebar a comparsa per dispositivi Mobile
         const menuBtn = document.getElementById("mobile-menu-btn");
         const overlay = document.getElementById("mobile-overlay");
         
         if (menuBtn && overlay) {
-            menuBtn.addEventListener("click", () => {
-                document.body.classList.add("sidebar-open");
-            });
-            
-            // Cliccando sul buio, si chiude la sidebar
-            overlay.addEventListener("click", () => {
-                document.body.classList.remove("sidebar-open");
-            });
+            menuBtn.addEventListener("click", () => document.body.classList.add("sidebar-open"));
+            overlay.addEventListener("click", () => document.body.classList.remove("sidebar-open"));
         }
-        this.init();
         
+        this.init();
     }
 
     /**
@@ -93,17 +88,18 @@ class ZenithEngine {
     init() {
         document.getElementById("loader")?.classList.add("visible");
 
-        // 1. INIZIALIZZAZIONE MOTORI (Logica corretta: esegue ENTRAMBE se esistono)
+        // Inizializzazione dinamica dei Moduli
         const startModule = (module, name) => {
             if (module) {
                 try {
                     if (typeof module.init === 'function') module.init();
-                    if (typeof module.initEvents === 'function') module.initEvents(); // 👈 Tolto l' "else"!
-                } catch (e) { console.warn(`Errore modulo ${name}`, e); }
+                    if (typeof module.initEvents === 'function') module.initEvents(); 
+                } catch (e) { 
+                    console.warn(`Errore modulo ${name}`, e); 
+                }
             }
         };
 
-        // Avvia tutti i moduli
         startModule(this.settingsMgr, "Settings");
         startModule(this.auth, "Auth");
         startModule(this.notes, "Notes");
@@ -111,7 +107,7 @@ class ZenithEngine {
         startModule(this.calendar, "Calendar");
         startModule(this.exportManager, "ExportManager");
 
-        // 2. TASTI BACKUP, RESET E LOGOUT
+        // --- GESTIONE DATI E ACCOUNT ---
         document.getElementById("exportAllBtn")?.addEventListener("click", () => {
             if (!this.loggedUser) return;
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.loggedUser));
@@ -124,7 +120,10 @@ class ZenithEngine {
         });
 
         document.getElementById("importBackupFile")?.addEventListener("change", (e) => {
-            const file = e.target.files[0]; if (!file) return; const reader = new FileReader();
+            const file = e.target.files[0]; 
+            if (!file) return; 
+            
+            const reader = new FileReader();
             reader.onload = (event) => {
                 try {
                     const importedData = JSON.parse(event.target.result);
@@ -132,13 +131,20 @@ class ZenithEngine {
                         this.loggedUser = importedData;
                         const users = JSON.parse(localStorage.getItem("users")) || [];
                         const idx = users.findIndex(u => u.id === this.loggedUser.id);
-                        if (idx !== -1) users[idx] = this.loggedUser; else users.push(this.loggedUser);
+                        
+                        if (idx !== -1) users[idx] = this.loggedUser; 
+                        else users.push(this.loggedUser);
+                        
                         localStorage.setItem("users", JSON.stringify(users));
                         localStorage.setItem("loggedUser", JSON.stringify(this.loggedUser));
                         alert("✅ Backup importato con successo! L'app si riavvierà per applicare i dati.");
                         location.reload();
-                    } else { alert("❌ File di backup non valido o corrotto."); }
-                } catch (err) { alert("❌ Errore nella lettura del file."); }
+                    } else { 
+                        alert("❌ File di backup non valido o corrotto."); 
+                    }
+                } catch (err) { 
+                    alert("❌ Errore nella lettura del file."); 
+                }
             };
             reader.readAsText(file);
         });
@@ -150,8 +156,7 @@ class ZenithEngine {
                 const remainingUsers = users.filter(u => u.id !== this.loggedUser.id);
                 localStorage.setItem("users", JSON.stringify(remainingUsers));
                 localStorage.removeItem("loggedUser");
-                //cancella per il debug tutto
-                localStorage.clear()
+                localStorage.clear();
                 location.reload();
             }
         });
@@ -160,69 +165,45 @@ class ZenithEngine {
             const allThemes = Array.from(document.querySelectorAll('.theme-option'))
                 .map(el => el.dataset.theme ? el.dataset.theme.trim() : '')
                 .filter(t => t !== '');
+                
             document.body.classList.remove('light', ...allThemes);
-            document.body.classList.add('dark'); // Forza il tema scuro per la landing
+            document.body.classList.add('dark'); 
             localStorage.removeItem("zenith_session");
             localStorage.removeItem("loggedUser");
             sessionStorage.removeItem("zenith_volatile_user");
             location.reload();
         });
-        // Tab Obiettivi (Gamification)
-        // Tab Obiettivi (Gamification)
-        // --- GESTIONE TAB PROFILO UNIVERSALE ---
+
+        // --- GESTIONE TABS PROFILO ---
         const switchProfileTab = (btnId, panelId) => {
-            // 1. Rimuove 'active' da tutti i bottoni del profilo
             document.querySelectorAll('.profile-tab').forEach(btn => btn.classList.remove('active'));
-            // 2. Nasconde tutti i pannelli che hanno la classe profile-tab-panel
             document.querySelectorAll('.profile-tab-panel').forEach(panel => panel.classList.add('hidden'));
 
-            // 3. Attiva quello selezionato
             document.getElementById(btnId).classList.add('active');
             document.getElementById(panelId).classList.remove('hidden');
         };
 
-        // Assegnazione degli eventi ai bottoni
-        document.getElementById("tabStatsBtn")?.addEventListener("click", () => {
-            switchProfileTab('tabStatsBtn', 'profile-tab-stats');
-        });
-
+        document.getElementById("tabStatsBtn")?.addEventListener("click", () => switchProfileTab('tabStatsBtn', 'profile-tab-stats'));
         document.getElementById("tabGoalsBtn")?.addEventListener("click", () => {
             switchProfileTab('tabGoalsBtn', 'profile-tab-goals');
-            this.gamification.updateUI(); // Aggiorna XP e Badge
+            this.gamification.updateUI(); 
         });
+        document.getElementById("tabAccountBtn")?.addEventListener("click", () => switchProfileTab('tabAccountBtn', 'profile-tab-account'));
 
-        document.getElementById("tabAccountBtn")?.addEventListener("click", () => {
-            switchProfileTab('tabAccountBtn', 'profile-tab-account');
-        });
-
-        // 3. NAVIGAZIONE E TABS PROFILO
+        // --- NAVIGAZIONE GLOBALE E MODALI ---
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', (e) => this.navigate(e.currentTarget.dataset.page));
         });
         document.getElementById("profileBtn")?.addEventListener("click", () => this.navigate('profilo'));
         document.getElementById("settingsBtn")?.addEventListener("click", () => this.navigate('settings'));
 
-        document.getElementById("closeFullChartBtn")?.addEventListener("click", () => { document.getElementById("fullChartModal").classList.add("hidden"); });
-        // Chiude la modale di Celebrazione Gamification
-        // Chiude la modale e controlla se ci sono altre celebrazioni in coda
-        document.getElementById("closeCelebrationBtn")?.addEventListener("click", () => {
-            this.gamification.closeCurrentCelebration();
-        });
-        // Apertura Guida Gamification
-        document.getElementById("gamificationHelpBtn")?.addEventListener("click", () => {
-            document.getElementById("gamificationHelpModal").classList.remove("hidden");
-        });
+        document.getElementById("closeFullChartBtn")?.addEventListener("click", () => document.getElementById("fullChartModal").classList.add("hidden"));
+        document.getElementById("closeCelebrationBtn")?.addEventListener("click", () => this.gamification.closeCurrentCelebration());
+        document.getElementById("gamificationHelpBtn")?.addEventListener("click", () => document.getElementById("gamificationHelpModal").classList.remove("hidden"));
+        document.getElementById("closeGamiHelpBtn")?.addEventListener("click", () => document.getElementById("gamificationHelpModal").classList.add("hidden"));
+        document.getElementById("alertConfirmBtn")?.addEventListener("click", () => document.getElementById("alertModal").classList.add("hidden"));
 
-        // Chiusura Guida Gamification
-        document.getElementById("closeGamiHelpBtn")?.addEventListener("click", () => {
-            document.getElementById("gamificationHelpModal").classList.add("hidden");
-        });
-        // 👇 AGGIUNGI QUESTE 3 RIGHE PER RISOLVERE IL BUG DELLA NOTIFICA 👇
-        document.getElementById("alertConfirmBtn")?.addEventListener("click", () => {
-            document.getElementById("alertModal").classList.add("hidden");
-        })
-
-        // 4. EVENTO: Cambio Vista tramite Menu a Tendina
+        // Gestione Cambio Vista (Griglia, Tabella, Kanban)
         const viewSelect = document.getElementById('viewModeSelect');
         if (viewSelect) {
             viewSelect.value = this.settings.viewMode || 'grid';
@@ -233,25 +214,26 @@ class ZenithEngine {
             });
         }
 
-        // 5. AVVIO UTENTE LOGGATO (Sincronizzazione Totale)
+        // Avvio Ritardato per consentire il setup del DOM
         setTimeout(() => {
             this.checkLoginState();
         }, 50);
-
     }
 
     /**
      * Gestisce il routing interno dell'applicazione (Single Page Application).
      * Nasconde le pagine non attive, mostra quella richiesta e salva lo stato.
-     * @param {string} pageId - L'ID della pagina da mostrare (es. 'dashboard', 'mie-note').
+     * @param {string} pageId - L'ID della pagina da mostrare.
      */
     navigate(pageId) {
-        if (pageId !== 'settings') { this.settingsMgr.revertPreview(); }
+        if (pageId !== 'settings') { 
+            this.settingsMgr.revertPreview(); 
+        }
+        
         if (pageId === 'mappa' && !this.plans.checkFeature('graph')) {
-            return; // Blocca la navigazione!
+            return;
         }
 
-        // SALVATAGGIO STATO: Ricorda l'ultima pagina
         localStorage.setItem("zenith_lastPage", pageId);
         this.currentPage = pageId;
 
@@ -267,6 +249,7 @@ class ZenithEngine {
             "profilo": "Profilo Utente", "settings": "Impostazioni",
             "mappa": "Mappa Relazionale"
         };
+        
         document.getElementById("topbar-title").textContent = titles[pageId] || "Zenith";
 
         if (pageId === 'mie-note') {
@@ -274,18 +257,20 @@ class ZenithEngine {
             this.fileSystem.renderSidebar();
             this.notes.renderNotes();
         }
-        if (pageId === 'mappa') { this.graph.render(); }
+        if (pageId === 'mappa') { 
+            this.graph.render(); 
+        }
     }
 
     /**
      * Calcola i dati analitici dalle note attive e istanzia/aggiorna i grafici Chart.js
-     * (Torta per le priorità, Barre per le cartelle, Barre per i tag).
      * @param {Array} activeNotes - Array contenente tutte le note non cestinate dell'utente.
      */
     renderCharts(activeNotes) {
         const ctxPrio = document.getElementById('priorityChart');
         const ctxWs = document.getElementById('workspaceChart');
         const ctxTag = document.getElementById('tagChart');
+        
         if (!ctxPrio || !ctxWs || !ctxTag || typeof Chart === 'undefined') return;
 
         const prioCounts = { alta: 0, media: 0, bassa: 0 };
@@ -293,43 +278,36 @@ class ZenithEngine {
         const tagCounts = {};
 
         activeNotes.forEach(n => {
-            // Conteggio Priorità (sempre attivo)
             if (prioCounts[n.priority] !== undefined) prioCounts[n.priority]++;
 
-            // Conteggio Cartelle (SOLO se la nota appartiene a una cartella specifica)
             if (n.folderId) {
                 const folder = this.fileSystem ? this.loggedUser.folders.find(f => f.id === n.folderId) : null;
                 const folderName = folder ? folder.name : "Cartella Eliminata";
                 wsCounts[folderName] = (wsCounts[folderName] || 0) + 1;
             }
 
-            // Conteggio Tag
             if (n.tags && Array.isArray(n.tags)) {
                 n.tags.forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; });
             }
         });
 
-        // Aggiorna la logica del placeholder per il grafico cartelle
-        // Ora il grafico viene mostrato solo se ci sono note assegnate a cartelle reali
+        // Visibilità Container Grafici
         const hasRealFoldersWithNotes = Object.keys(wsCounts).length > 0;
         document.getElementById("wsChartPlaceholder")?.classList.toggle("hidden", hasRealFoldersWithNotes);
         document.getElementById("wsChartContainer")?.classList.toggle("hidden", !hasRealFoldersWithNotes);
 
-        // LOGICA PLACEHOLDERS
         const hasNotes = activeNotes.length > 0;
         const hasCustomWs = Object.keys(wsCounts).filter(w => w !== "Generale").length > 0;
         const hasTags = Object.keys(tagCounts).length > 0;
 
         document.getElementById("prioChartPlaceholder")?.classList.toggle("hidden", hasNotes);
         document.getElementById("prioChartContainer")?.classList.toggle("hidden", !hasNotes);
-
         document.getElementById("wsChartPlaceholder")?.classList.toggle("hidden", hasCustomWs);
         document.getElementById("wsChartContainer")?.classList.toggle("hidden", !hasCustomWs);
-
         document.getElementById("tagChartPlaceholder")?.classList.toggle("hidden", hasTags);
         document.getElementById("tagChartContainer")?.classList.toggle("hidden", !hasTags);
 
-        // Ordine e Taglio Dati
+        // Processamento Dati
         const processData = (obj, limit) => {
             const sorted = Object.entries(obj).sort((a, b) => b[1] - a[1]);
             return { full: sorted, top: sorted.slice(0, limit), isTruncated: sorted.length > limit };
@@ -338,9 +316,9 @@ class ZenithEngine {
         const wsData = processData(wsCounts, 5);
         const tagData = processData(tagCounts, 8);
 
-        // Bottoni "Vedi tutti"
         const btnWs = document.getElementById("btnShowAllWs");
         const btnTag = document.getElementById("btnShowAllTags");
+        
         if (btnWs) {
             btnWs.classList.toggle("hidden", !wsData.isTruncated);
             btnWs.onclick = () => this.openFullChart('Tutti i Workspace', wsData.full, 'bar');
@@ -350,7 +328,7 @@ class ZenithEngine {
             btnTag.onclick = () => this.openFullChart('Tutti i Tag', tagData.full, 'bar_horizontal');
         }
 
-        // Colori
+        // Variabili CSS Theme
         const root = getComputedStyle(document.documentElement);
         const colErr = root.getPropertyValue('--badge-err-t').trim() || '#ff4d4d';
         const colWarn = root.getPropertyValue('--badge-warn-t').trim() || '#ffcc00';
@@ -390,8 +368,8 @@ class ZenithEngine {
     }
 
     /**
-     * Verifica se un utente è attualmente loggato. Se sì, gestisce il caricamento fluido dell'interfaccia (loader)
-     * e ripristina l'ultima pagina/cartella visitata. Altrimenti mostra la schermata di login.
+     * Verifica se un utente è loggato. In caso positivo carica i dati e la schermata corretta,
+     * altrimenti mostra la landing page per il login.
      */
     checkLoginState() {
         const loader = document.getElementById("loader");
@@ -399,7 +377,6 @@ class ZenithEngine {
         const authScreen = document.getElementById("landing-page");
         const appScreen = document.getElementById("app");
 
-        // 🟢 ACCENSIONE SICURA
         if (loader) {
             loader.classList.add("visible");
             loader.style.visibility = "visible";
@@ -407,7 +384,10 @@ class ZenithEngine {
             loader.style.pointerEvents = "auto";
         }
 
-        const updateProgress = (perc) => { if (loaderFill) loaderFill.style.width = perc + "%"; };
+        const updateProgress = (perc) => { 
+            if (loaderFill) loaderFill.style.width = perc + "%"; 
+        };
+        
         updateProgress(30);
 
         if (this.loggedUser) {
@@ -432,10 +412,9 @@ class ZenithEngine {
 
                 updateProgress(90);
 
-                // 🟢 FIX BUG: Protezione totale contro stringhe "undefined", "null" o cartelle eliminate
                 let lastPage = localStorage.getItem("zenith_lastPage");
 
-                // 1. Se la stringa è corrotta, forza il riavvio su "Tutte le Note"
+                // Gestione riavvio sicuro su Tutte le Note in caso di dati corrotti
                 if (!lastPage || lastPage === "undefined" || lastPage === "null") {
                     lastPage = "mie-note";
                 }
@@ -443,7 +422,6 @@ class ZenithEngine {
                 if (lastPage === 'mie-note') {
                     const savedFolder = localStorage.getItem("zenith_lastFolderId");
 
-                    // 2. Verifica che la stringa sia valida E che la cartella esista ancora fisicamente!
                     const folderExists = savedFolder &&
                         savedFolder !== "root" &&
                         savedFolder !== "null" &&
@@ -453,7 +431,6 @@ class ZenithEngine {
                     if (folderExists) {
                         this.fileSystem.showFolder(savedFolder);
                     } else {
-                        // 3. Se la cartella è stata eliminata o c'è un errore, vai nella Root
                         this.navigate('mie-note');
                     }
                 } else {
@@ -467,7 +444,6 @@ class ZenithEngine {
             setTimeout(() => {
                 updateProgress(100);
                 setTimeout(() => {
-                    // 🟢 SPEGNIMENTO BRUTALE DELLO SCUDO
                     if (loader) {
                         loader.classList.remove("visible");
                         loader.style.visibility = "hidden";
@@ -481,8 +457,8 @@ class ZenithEngine {
             authScreen.classList.remove("hidden");
             appScreen.classList.add("hidden");
             updateProgress(100);
+            
             setTimeout(() => {
-                // 🟢 SPEGNIMENTO BRUTALE DELLO SCUDO (Pagina Login)
                 if (loader) {
                     loader.classList.remove("visible");
                     loader.style.visibility = "hidden";
@@ -491,9 +467,15 @@ class ZenithEngine {
                 }
             }, 500);
         }
+        
         this.gamification.init();
     }
 
+    /**
+     * Decripta il vault (note, cartelle e impostazioni) in memoria RAM.
+     * @param {string} password - La Master Password dell'utente.
+     * @returns {boolean} True se il decriptaggio ha avuto successo, False altrimenti.
+     */
     unlockVault(password) {
         if (!this.loggedUser || !this.loggedUser.notes) return true; 
 
@@ -502,18 +484,18 @@ class ZenithEngine {
             if (!decrypted) return false; 
 
             this.loggedUser.notes = JSON.parse(decrypted);
+            
             if (this.loggedUser.folders) {
                 const decFolders = Utils.decrypt(this.loggedUser.folders, password);
                 this.loggedUser.folders = decFolders ? JSON.parse(decFolders) : [];
             }
             
-            // 🟢 FIX DECRIPTAZIONE TEMI E SETTINGS
             if (this.loggedUser.theme && typeof this.loggedUser.theme === 'string' && this.loggedUser.theme.length > 30) {
                 this.loggedUser.theme = Utils.decrypt(this.loggedUser.theme, password);
             }
+            
             if (this.loggedUser.settings && typeof this.loggedUser.settings === 'string') {
                 const decSettings = Utils.decrypt(this.loggedUser.settings, password);
-                // 🟢 FIX: Ora usiamo 'this.settings', non 'this.app.settings'
                 if (decSettings) this.settings = JSON.parse(decSettings); 
             }
         }
@@ -523,23 +505,18 @@ class ZenithEngine {
     }
 
     /**
-     * Salva l'oggetto globale dell'utente (con note, cartelle e dati) all'interno del LocalStorage.
-     * Questa funzione viene chiamata dopo quasi ogni modifica per garantire la persistenza.
+     * Salva l'oggetto globale dell'utente (con note, cartelle e dati) nel LocalStorage, criptandolo se necessario.
      */
     saveUser() {
         if (!this.loggedUser) return;
 
-        // Prepariamo l'oggetto da salvare. Se abbiamo la chiave, criptiamo il contenuto.
         let userToSave = JSON.parse(JSON.stringify(this.loggedUser));
 
         if (this.masterKey) {
             userToSave.notes = Utils.encrypt(JSON.stringify(this.loggedUser.notes), this.masterKey);
             userToSave.folders = Utils.encrypt(JSON.stringify(this.loggedUser.folders), this.masterKey);
-            
-            // 🟢 FIX: Ora usiamo 'this.settings', non 'this.app.settings'
             userToSave.theme = Utils.encrypt(this.loggedUser.theme || 'dark', this.masterKey);
             userToSave.settings = Utils.encrypt(JSON.stringify(this.settings), this.masterKey);
-            
             userToSave.cryptoCheck = Utils.encrypt("ZENITH_AUTH_OK", this.masterKey);
         }
 
@@ -547,22 +524,19 @@ class ZenithEngine {
         if (idx !== -1) this.users[idx] = userToSave;
 
         localStorage.setItem("users", JSON.stringify(this.users));
-        // Rimuoviamo il vecchio salvataggio in chiaro per sicurezza
         localStorage.removeItem("loggedUser");
     }
 
     /**
-     * Aggiorna i contatori numerici globali presenti nella pagina Profilo
-     * (Totale Note, Note in Scadenza, Note Cestinate) e avvia il rendering dei grafici.
+     * Aggiorna i contatori analitici nel profilo e avvia il rendering dei grafici.
      */
     updateStats() {
         if (!this.loggedUser) return;
 
-        // SALVAGENTE: Se per qualche motivo le note sono "undefined", usa un array vuoto
         const userNotes = this.loggedUser.notes || [];
-
         const active = userNotes.filter(n => n.status !== 'trashed');
         const trashed = userNotes.filter(n => n.status === 'trashed');
+        
         const now = new Date();
         const tom = new Date(now.getTime() + 24 * 60 * 60 * 1000);
         const expiring = active.filter(n => n.dueDate && new Date(n.dueDate) > now && new Date(n.dueDate) <= tom);
@@ -571,7 +545,6 @@ class ZenithEngine {
         if (document.getElementById("stat-scadenza")) document.getElementById("stat-scadenza").textContent = expiring.length;
         if (document.getElementById("stat-cestino")) document.getElementById("stat-cestino").textContent = trashed.length;
 
-        // Prova a disegnare i grafici, ma senza bloccare l'app se fallisce
         try {
             this.renderCharts(active);
         } catch (e) {
@@ -580,14 +553,15 @@ class ZenithEngine {
     }
 
     /**
-     * Apre una finestra modale per visualizzare una versione ingrandita e completa di un grafico.
-     * @param {string} title - Il titolo del grafico da mostrare nella modale.
-     * @param {Array} dataArray - L'array di dati già formattato da passare a Chart.js.
-     * @param {string} type - La tipologia di grafico ('bar' orizzontale o 'bar_horizontal' verticale).
+     * Apre la modale per la visualizzazione a pieno schermo dei grafici analitici.
+     * @param {string} title - Titolo del grafico.
+     * @param {Array} dataArray - Dati da visualizzare.
+     * @param {string} type - 'bar' o 'bar_horizontal'.
      */
     openFullChart(title, dataArray, type) {
         document.getElementById("fullChartModal").classList.remove("hidden");
         document.getElementById("fullChartTitle").textContent = `📈 ${title}`;
+        
         const ctx = document.getElementById('fullChartCanvas');
         if (window.fullChartInstance) window.fullChartInstance.destroy();
 
@@ -596,7 +570,17 @@ class ZenithEngine {
 
         window.fullChartInstance = new Chart(ctx, {
             type: 'bar',
-            data: { labels: dataArray.map(d => d[0]), datasets: [{ label: 'Conteggio Note', data: dataArray.map(d => d[1]), backgroundColor: color, borderColor: border, borderWidth: 1, borderRadius: 4 }] },
+            data: { 
+                labels: dataArray.map(d => d[0]), 
+                datasets: [{ 
+                    label: 'Conteggio Note', 
+                    data: dataArray.map(d => d[1]), 
+                    backgroundColor: color, 
+                    borderColor: border, 
+                    borderWidth: 1, 
+                    borderRadius: 4 
+                }] 
+            },
             options: {
                 indexAxis: type === 'bar_horizontal' ? 'y' : 'x',
                 responsive: true, maintainAspectRatio: false,
@@ -610,36 +594,73 @@ class ZenithEngine {
     }
 
     /**
-     * Avvia un timer in background (intervallo di 1 minuto) che controlla se le note
-     * sono scadute. Se scadute, le sposta nel cestino o le vaporizza se previsto dalle impostazioni.
+     * Avvia un timer in background per il controllo scadenze (ogni minuto).
+     * Se una nota scade, la sposta nel cestino o la distrugge.
      */
     startTimer() {
         if (this.timerInterval) clearInterval(this.timerInterval);
+        
         this.timerInterval = setInterval(() => {
-            let nr = false; const now = new Date();
-            this.loggedUser.notes.forEach(note => { if (note.status !== 'trashed' && note.dueDate) { if (now >= new Date(note.dueDate)) { if (note.pin && this.settings.autoDestroy) this.loggedUser.notes = this.loggedUser.notes.filter(n => n.id !== note.id); else { note.status = 'trashed'; note.trashedAt = Date.now(); } nr = true; } } });
-            if (nr) { this.saveUser(); this.notes.renderNotes(); this.updateStats(); this.calendar.render(); }
+            let nr = false; 
+            const now = new Date();
+            
+            this.loggedUser.notes.forEach(note => { 
+                if (note.status !== 'trashed' && note.dueDate) { 
+                    if (now >= new Date(note.dueDate)) { 
+                        if (note.pin && this.settings.autoDestroy) {
+                            this.loggedUser.notes = this.loggedUser.notes.filter(n => n.id !== note.id); 
+                        } else { 
+                            note.status = 'trashed'; 
+                            note.trashedAt = Date.now(); 
+                        } 
+                        nr = true; 
+                    } 
+                } 
+            });
+            
+            if (nr) { 
+                this.saveUser(); 
+                this.notes.renderNotes(); 
+                this.updateStats(); 
+                this.calendar.render(); 
+            }
         }, 60000);
     }
 
     /**
-     * Controlla attivamente le note che scadranno nelle prossime 24 ore.
-     * Se trova note a rischio che non hanno ancora lanciato l'avviso (`alerted: false`), mostra il popup promemoria.
+     * Controlla le note in scadenza entro le 24 ore per lanciare la notifica alert.
      */
     checkExpiring() {
-        const now = new Date(); const tom = new Date(now.getTime() + 24 * 60 * 60 * 1000); let exp = [];
-        this.loggedUser.notes.forEach(note => { if (note.status !== 'trashed' && note.dueDate && !note.alerted) { const lim = new Date(note.dueDate); if (lim > now && lim <= tom) { exp.push(note); note.alerted = true; } } });
-        if (exp.length > 0) { this.saveUser(); const listDiv = document.getElementById("alertList"); listDiv.innerHTML = exp.map(n => `<div>• <b>${n.title}</b></div>`).join(''); document.getElementById("alertModal").classList.remove("hidden"); }
+        const now = new Date(); 
+        const tom = new Date(now.getTime() + 24 * 60 * 60 * 1000); 
+        let exp = [];
+        
+        this.loggedUser.notes.forEach(note => { 
+            if (note.status !== 'trashed' && note.dueDate && !note.alerted) { 
+                const lim = new Date(note.dueDate); 
+                if (lim > now && lim <= tom) { 
+                    exp.push(note); 
+                    note.alerted = true; 
+                } 
+            } 
+        });
+        
+        if (exp.length > 0) { 
+            this.saveUser(); 
+            const listDiv = document.getElementById("alertList"); 
+            listDiv.innerHTML = exp.map(n => `<div>• <b>${n.title}</b></div>`).join(''); 
+            document.getElementById("alertModal").classList.remove("hidden"); 
+        }
     }
 
     /**
-     * Funzione di manutenzione del cestino: elimina permanentemente dal database
-     * tutte le note il cui tempo di stazionamento nel cestino supera i 7 giorni.
+     * Elimina permanentemente le note che stazionano nel cestino da più di 7 giorni.
      */
     maintainTrash() {
         const now = Date.now();
         const sev = 7 * 24 * 60 * 60 * 1000;
         let c = false;
+        
         this.loggedUser.notes = this.loggedUser.notes.filter(note => {
             if (note.status === 'trashed' && note.trashedAt && (now - note.trashedAt > sev)) {
                 c = true;
@@ -647,12 +668,12 @@ class ZenithEngine {
             }
             return true;
         });
+        
         if (c) this.saveUser();
     }
 
     /**
-     * Genera al volo un file JSON strutturato contenente tutti i dati dell'utente (account, note, cartelle)
-     * e ne forza il download sul dispositivo (Export Backup).
+     * Genera e scarica un file JSON di backup con i dati completi dell'utente.
      */
     exportBackup() {
         const dataStr = JSON.stringify(this.loggedUser, null, 2);
@@ -664,13 +685,13 @@ class ZenithEngine {
     }
 
     /**
-     * Legge un file JSON caricato dall'utente e prova a ripristinare il database locale.
-     * Dopo la verifica della validità, ricarica l'intera app.
-     * @param {Event} event - L'evento generato dall'input file.
+     * Legge un file JSON caricato dall'utente e tenta il ripristino del database locale.
+     * @param {Event} event - L'evento originato dall'input file.
      */
     importBackup(event) {
         const file = event.target.files[0];
         if (!file) return;
+        
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
@@ -685,15 +706,17 @@ class ZenithEngine {
                     this.auth.populateProfile();
                     this.fileSystem.renderSidebar();
                     this.fileSystem.updateSelects();
-                    Utils.showToast("Backup importato!");
+                    if (typeof Utils !== 'undefined') Utils.showToast("Backup importato!");
                 }
-            } catch (err) { alert("Errore lettura JSON."); }
+            } catch (err) { 
+                alert("Errore lettura JSON."); 
+            }
         };
         reader.readAsText(file);
         event.target.value = '';
     }
 }
 
-// Istanziazione globale dell'applicazione all'avvio del file App.js
+// Istanziazione globale dell'applicazione all'avvio del file
 const app = new ZenithEngine();
 window.app = app;

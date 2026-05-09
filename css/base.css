@@ -1,0 +1,93 @@
+/* ==========================================
+   BASE.CSS
+   Variabili globali, reset del browser,
+   tipografia e utilità di base dell'app.
+   ========================================== */
+
+/* ── VARIABILI GLOBALI E RESET ── */
+:root {
+    --sidebar-w: 240px;
+    --topbar-h: 60px;
+    --transition: 0.22s ease;
+    
+    /* Variabili dinamiche controllate da SettingsManager.js */
+    --user-font-size: 14px;
+    --user-font-family: system-ui, sans-serif;
+    --user-card-width: 280px;
+    --user-card-height: 320px;
+}
+
+/* Reset universale */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0; 
+    padding: 0;
+    font-family: var(--user-font-family) !important;
+}
+
+/* Struttura base della pagina (Impedisce lo scroll indesiderato) */
+html, body {
+    height: 100%; 
+    width: 100%;
+    margin: 0; 
+    padding: 0;
+    overflow: hidden !important;
+    font-size: var(--user-font-size) !important;
+    background: var(--bg-page); 
+    color: var(--text-1);
+    transition: background var(--transition), color var(--transition);
+}
+
+/* ── CUSTOM SCROLLBAR THEMATIZZATA ── */
+::-webkit-scrollbar { 
+    width: 12px; 
+    height: 12px; 
+}
+
+::-webkit-scrollbar-track { 
+    background: var(--bg-page); 
+}
+
+::-webkit-scrollbar-thumb { 
+    background: var(--border2); 
+    border-radius: 6px; 
+    border: 3px solid var(--bg-page); 
+}
+
+::-webkit-scrollbar-thumb:hover { 
+    background: var(--accent); 
+}
+
+/* ── UTILITY GLOBALI ── */
+.hidden { 
+    display: none !important; 
+}
+
+/* Applica globalmente il font a tutti gli elementi interattivi */
+body, button, input, select, textarea, .btn, .input-field, #toast, .cal-tooltip,
+.sidebar-footer, .nav-item, .footer-role, .auth-switch-text {
+    font-family: var(--user-font-family, system-ui, sans-serif) !important;
+    font-size: inherit !important;
+}
+
+/* ── ANIMAZIONI DI BASE GLOBALI ── */
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: none; } 
+}
+
+/* ── COLOR SCHEME NATIVO (Supporto Browser) ── */
+/* Adatta i menu a tendina nativi e i calendari di sistema al tema scelto */
+body.dark, body.gradient, body.cyberpunk, body.forest, body.midnight, 
+body.sunset, body.dracula, body.solarized, body.coffee, body.mint, body.matrix,
+body.obsidian, body.sahara, body.amethyst, body.atlantis, body.blueprint, body.cybergold,
+body.acid-green, body.royal-blue, body.ruby-red, body.slate-gray, body.sunset-gold,
+body.electric-purple, body.coffee-shop, body.ocean-deep, body.volcano, body.emerald,
+body.copper, body.starlight, body.lava, body.moss, body.moonlight {
+    color-scheme: dark; 
+}
+
+body.light, body.lavender, body.cherry, body.sepia, body.mint-fresh, body.desert-sand,
+body.sakura, body.iceberg, body.peach, body.rosegold, body.toscana {
+    color-scheme: light; 
+}

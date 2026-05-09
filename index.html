@@ -5,12 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1200">
   <title>Zenith - Gestione Note</title>
+
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0a1a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Zenith">
-  <link rel="stylesheet" href="Zenith_css.css">
+  <link rel="stylesheet" href=".\css\themes.css">
+  <link rel="stylesheet" href=".\css\components.css">
+  <link rel="stylesheet" href=".\css\layout.css">
+  <link rel="stylesheet" href=".\css\base.css">
+
 </head>
 
 <body class="dark">
@@ -23,7 +28,6 @@
           <circle class="star s2" cx="12" cy="5" r="3" fill="currentColor" />
           <circle class="star s3" cx="19" cy="14" r="2.2" fill="currentColor" />
           <circle class="star s4" cx="14" cy="20" r="1.8" fill="currentColor" />
-
           <line class="const-line" x1="5" y1="17" x2="12" y2="5" stroke="currentColor" stroke-width="1.2" />
           <line class="const-line" x1="12" y1="5" x2="19" y2="14" stroke="currentColor" stroke-width="1.2" />
           <line class="const-line" x1="19" y1="14" x2="14" y2="20" stroke="currentColor" stroke-width="1.2" />
@@ -34,7 +38,6 @@
       <button id="landingThemeToggle" class="icon-btn-small"
         style="margin-right: 15px; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
         title="Cambia Tema">🌓</button>
-
       <button id="navLoginBtn" class="btn-text"
         style="color: var(--text-2); margin-right: 20px; font-size: 15px;">Accedi</button>
       <button id="navRegisterBtn" class="btn" style="border-radius: 30px; padding: 10px 24px;">Inizia Gratis</button>
@@ -251,7 +254,6 @@
     </div>
   </div>
 
-
   <div id="app" class="hidden">
 
     <aside id="sidebar" style="display: flex; flex-direction: column;">
@@ -262,7 +264,6 @@
             <circle class="star s2" cx="12" cy="5" r="3" fill="currentColor" />
             <circle class="star s3" cx="19" cy="14" r="2.2" fill="currentColor" />
             <circle class="star s4" cx="14" cy="20" r="1.8" fill="currentColor" />
-
             <line class="const-line" x1="5" y1="17" x2="12" y2="5" stroke="currentColor" stroke-width="1.2" />
             <line class="const-line" x1="12" y1="5" x2="19" y2="14" stroke="currentColor" stroke-width="1.2" />
             <line class="const-line" x1="19" y1="14" x2="14" y2="20" stroke="currentColor" stroke-width="1.2" />
@@ -292,7 +293,10 @@
           <button id="addWorkspaceBtn" class="icon-btn-small" style="font-size: 14px; padding: 0 5px;"
             title="Crea nuova cartella">+</button>
         </div>
-        <div class="workspace-list" id="sidebarWorkspaces">
+        <div class="workspace-list" id="sidebarWorkspaces"></div>
+        <div id="noWorkspacesPlaceholder"
+            style="padding: 10px 12px; font-size: 12px; color: var(--text-3); font-style: italic; display: none;">
+            Nessun workspace creato...
         </div>
 
         <div class="nav-section-label" style="margin-top: 20px;">🏷️ Smart Tags (Frequenti)</div>
@@ -320,9 +324,7 @@
             <div id="sidebarXPBar" style="width: 0%; height: 100%; background: var(--accent); transition: width 0.3s;">
             </div>
           </div>
-
         </div>
-
       </div>
     </aside>
 
@@ -356,7 +358,6 @@
               <div class="form-row" style="margin-bottom: 12px;">
                 <input type="text" id="noteTitle" class="input-field" placeholder="Titolo della nota..."
                   style="flex: 2; margin: 0;">
-
                 <div
                   style="display: flex; align-items: center; gap: 10px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 6px; padding: 0 10px;">
                   <label for="noteColor" style="font-size: 13px; color: var(--text-2); white-space: nowrap;">🎨 Colore
@@ -364,7 +365,6 @@
                   <input type="color" id="noteColor" value="#000000" title="Nero = Nessuno (Usa Default)"
                     style="border: none; background: transparent; height: 38px; width: 35px; cursor: pointer; padding: 0;">
                 </div>
-
                 <input type="password" id="notePin" class="input-field" placeholder="PIN Segreto (5 cifre)"
                   maxlength="5" style="flex: 1; margin: 0;" title="Opzionale: Proteggi con PIN">
               </div>
@@ -374,10 +374,10 @@
                 <button id="markdownHelpBtn" class="icon-btn-small" style="border-radius: 4px;"
                   title="Guida Markdown">Sintassi Markdown (?)</button>
               </div>
+
               <div style="position: relative; width: 100%; display: flex; flex-direction: column;">
                 <textarea id="noteDesc" placeholder="Scrivi una nuova nota..."
                   style="flex: 1; width: 100%; background: var(--bg-card2); color: var(--text-1); border: 1px solid var(--border); border-radius: 8px; padding: 12px 35px 12px 12px; resize: none; outline: none; margin: 0; font-family: inherit; min-height: 120px;"></textarea>
-
                 <button id="zenCreateBtn" type="button" title="Zen Mode"
                   style="position: absolute; bottom: 10px; right: 10px; background: none; border: none; cursor: pointer; font-size: 20px; z-index: 10; color: var(--text-1); opacity: 0.5; transition: 0.2s;">⭐</button>
               </div>
@@ -391,19 +391,16 @@
                     (Data)</label>
                   <input type="date" id="noteDate" class="input-field" style="margin:0;">
                 </div>
-
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
                   <label for="noteTime" style="font-size: 12px; color: var(--text-2); font-weight: bold;">⏰ Scadenza
                     (Ora)</label>
                   <input type="time" id="noteTime" class="input-field" style="margin:0;">
                 </div>
-
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
                   <label for="noteWorkspace" style="font-size: 12px; color: var(--text-2); font-weight: bold;">📁
                     Cartella (Workspace)</label>
                   <select id="noteWorkspace" class="input-field" style="margin:0;"></select>
                 </div>
-
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
                   <label for="notePriority" style="font-size: 12px; color: var(--text-2); font-weight: bold;">🚨
                     Priorità</label>
@@ -484,6 +481,7 @@
               </select>
             </div>
           </div>
+
           <div id="subfolders-explorer"></div>
 
           <h3 class="section-title pinned-title hidden">📌 In Evidenza</h3>
@@ -499,7 +497,6 @@
           </div>
           <div id="graph-container"
             style="width: 100%; height: 70vh; background: var(--bg-sidebar); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; position: relative;">
-
             <div class="graph-legend" id="graph-legend">
               <h4>Legenda Nodi e Archi</h4>
               <div class="legend-item"><span class="leg-icon" style="color: var(--accent);">⭐</span> Zenith (Radice)
@@ -513,9 +510,7 @@
                 Priorità)</div>
               <div class="legend-item"><span class="leg-icon" style="color: var(--badge-ok-t);">●</span> Nota (Bassa
                 Priorità)</div>
-
               <div style="height: 1px; background: rgba(255,255,255,0.2); margin: 10px 0;"></div>
-
               <div class="legend-item">
                 <div
                   style="width: 25px; height: 2px; background: rgba(255,255,255,0.4); position: relative; margin-right: 8px;">
@@ -531,21 +526,19 @@
                 Link Direzionale [[Nota]]
               </div>
             </div>
-
           </div>
         </div>
+
         <div class="page" id="page-calendario">
           <div class="page-header">
             <h1>Calendario Scadenze</h1>
             <p>Visualizza a colpo d'occhio le note in scadenza questo mese.</p>
           </div>
-
           <div class="calendar-header">
             <button id="prevMonthBtn" class="calendar-nav-btn">◀ Precedente</button>
             <h2 id="calendarMonthDisplay" style="margin:0; color: var(--text-1);">Mese Anno</h2>
             <button id="nextMonthBtn" class="calendar-nav-btn">Successivo ▶</button>
           </div>
-
           <div class="calendar-grid" style="margin-bottom: 10px;">
             <div class="calendar-day-header">Lun</div>
             <div class="calendar-day-header">Mar</div>
@@ -555,7 +548,6 @@
             <div class="calendar-day-header">Sab</div>
             <div class="calendar-day-header">Dom</div>
           </div>
-
           <div class="calendar-grid" id="calendarDaysGrid"></div>
         </div>
 
@@ -577,7 +569,6 @@
               <h1>Il Mio Profilo</h1>
               <p>Gestisci il tuo account e analizza la tua produttività.</p>
             </div>
-
             <div class="profile-nav-container">
               <button id="tabStatsBtn" class="profile-tab active">📊 Analisi Dati</button>
               <button class="profile-tab" id="tabGoalsBtn">🏆 Obiettivi</button>
@@ -601,10 +592,11 @@
               </div>
             </div>
 
-            <div class="stat-label" style="margin-top: 10px; margin-bottom: 15px; font-size: 16px;">📊 Analisi Dati
-              (In Tempo Reale)</div>
+            <div class="stat-label" style="margin-top: 10px; margin-bottom: 15px; font-size: 16px;">📊 Analisi Dati (In
+              Tempo Reale)</div>
             <div class="stat-grid"
               style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 30px;">
+
               <div class="stat-card"
                 style="display: flex; flex-direction: column; align-items: center; height: 330px; position: relative;">
                 <div style="font-size: 13px; color: var(--text-2); margin-bottom: 10px; font-weight: bold;">
@@ -634,8 +626,8 @@
 
               <div class="stat-card"
                 style="display: flex; flex-direction: column; align-items: center; height: 330px; position: relative;">
-                <div style="font-size: 13px; color: var(--text-2); margin-bottom: 10px; font-weight: bold;">Analisi
-                  Tag</div>
+                <div style="font-size: 13px; color: var(--text-2); margin-bottom: 10px; font-weight: bold;">Analisi Tag
+                </div>
                 <div id="tagChartPlaceholder" class="hidden"
                   style="position: absolute; top: 50%; text-align: center; color: var(--text-3); font-size: 13px; width: 80%;">
                   🔍 Sembra che non ci siano tag... <br> Aggiungine alcuni per vederli qui!
@@ -643,11 +635,11 @@
                 <div id="tagChartContainer" style="flex: 1; width: 100%; position: relative;"><canvas
                     id="tagChart"></canvas></div>
                 <button id="btnShowAllTags" class="btn hidden"
-                  style="margin-top:10px; font-size:11px; padding: 5px 10px; width: 100%;">🔍 Vedi tutti i
-                  Tag</button>
+                  style="margin-top:10px; font-size:11px; padding: 5px 10px; width: 100%;">🔍 Vedi tutti i Tag</button>
               </div>
             </div>
           </div>
+
           <div id="profile-tab-goals" class="profile-tab-panel hidden">
             <div class="gamification-hero"
               style="display: flex; gap: 25px; align-items: center; background: var(--bg-card2); padding: 25px; border-radius: 15px; border: 1px solid var(--border);">
@@ -772,7 +764,6 @@
             </aside>
 
             <main class="settings-content">
-
               <section id="tab-aspetto" class="settings-tab-panel active">
                 <div class="stat-card">
                   <div class="stat-label">Temi dell'Applicazione</div>
@@ -825,79 +816,56 @@
                         class="theme-dot amethyst"></span> Amethyst <span class="premium-crown">👑</span></div>
                     <div class="theme-option" data-theme="atlantis" data-label="Abissi Marini"><span
                         class="theme-dot atlantis"></span> Atlantis <span class="premium-crown">👑</span></div>
-                    <div class="theme-option" data-theme="acid-green" data-label="Verde Acido">
-                      <span class="theme-dot acid-green"></span> Acid Green <span class="premium-crown">👑</span>
+                    <div class="theme-option" data-theme="acid-green" data-label="Verde Acido"><span
+                        class="theme-dot acid-green"></span> Acid Green <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="royal-blue" data-label="Blu Reale"><span
+                        class="theme-dot royal-blue"></span> Royal Blue <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="ruby-red" data-label="Rosso Rubino"><span
+                        class="theme-dot ruby-red"></span> Ruby Red <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="slate-gray" data-label="Grigio Ardesia"><span
+                        class="theme-dot slate-gray"></span> Slate Gray <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="sunset-gold" data-label="Oro Tramonto"><span
+                        class="theme-dot sunset-gold"></span> Sunset Gold <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="mint-fresh" data-label="Menta Fresca"><span
+                        class="theme-dot mint-fresh"></span> Mint Fresh <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="electric-purple" data-label="Viola Elettrico"><span
+                        class="theme-dot electric-purple"></span> Electric Purple <span class="premium-crown">👑</span>
                     </div>
-                    <div class="theme-option" data-theme="royal-blue" data-label="Blu Reale">
-                      <span class="theme-dot royal-blue"></span> Royal Blue <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="ruby-red" data-label="Rosso Rubino">
-                      <span class="theme-dot ruby-red"></span> Ruby Red <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="slate-gray" data-label="Grigio Ardesia">
-                      <span class="theme-dot slate-gray"></span> Slate Gray <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="sunset-gold" data-label="Oro Tramonto">
-                      <span class="theme-dot sunset-gold"></span> Sunset Gold <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="mint-fresh" data-label="Menta Fresca">
-                      <span class="theme-dot mint-fresh"></span> Mint Fresh <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="electric-purple" data-label="Viola Elettrico">
-                      <span class="theme-dot electric-purple"></span> Electric Purple <span
-                        class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="coffee-shop" data-label="Coffee Shop">
-                      <span class="theme-dot coffee-shop"></span> Coffee Shop <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="ocean-deep" data-label="Oceano Profondo">
-                      <span class="theme-dot ocean-deep"></span> Ocean Deep <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="desert-sand" data-label="Sabbia del Deserto">
-                      <span class="theme-dot desert-sand"></span> Desert Sand <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="sakura" data-label="Fiori di Ciliegio">
-                      <span class="theme-dot sakura"></span> Sakura <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="iceberg" data-label="Ghiaccio Artico">
-                      <span class="theme-dot iceberg"></span> Iceberg <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="volcano" data-label="Vulcano Attivo">
-                      <span class="theme-dot volcano"></span> Volcano <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="emerald" data-label="Smeraldo">
-                      <span class="theme-dot emerald"></span> Emerald <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="copper" data-label="Rame Antico">
-                      <span class="theme-dot copper"></span> Copper <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="starlight" data-label="Luce Stellare">
-                      <span class="theme-dot starlight"></span> Starlight <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="lava" data-label="Lava Fluida">
-                      <span class="theme-dot lava"></span> Lava <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="moss" data-label="Muschio di Bosco">
-                      <span class="theme-dot moss"></span> Forest Moss <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="peach" data-label="Peach Fuzz">
-                      <span class="theme-dot peach"></span> Peach Fuzz <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="moonlight" data-label="Chiaro di Luna">
-                      <span class="theme-dot moonlight"></span> Moonlight <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="toscana" data-label="Toscana">
-                      <span class="theme-dot toscana"></span> Toscana <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="blueprint" data-label="Blueprint">
-                      <span class="theme-dot blueprint"></span> Blueprint <span class="premium-crown">👑</span>
-                    </div>
-                    <div class="theme-option" data-theme="cybergold" data-label="Cyber Gold">
-                      <span class="theme-dot cybergold"></span> Cyber Gold <span class="premium-crown">👑</span>
-                    </div>
+                    <div class="theme-option" data-theme="coffee-shop" data-label="Coffee Shop"><span
+                        class="theme-dot coffee-shop"></span> Coffee Shop <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="ocean-deep" data-label="Oceano Profondo"><span
+                        class="theme-dot ocean-deep"></span> Ocean Deep <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="desert-sand" data-label="Sabbia del Deserto"><span
+                        class="theme-dot desert-sand"></span> Desert Sand <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="sakura" data-label="Fiori di Ciliegio"><span
+                        class="theme-dot sakura"></span> Sakura <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="iceberg" data-label="Ghiaccio Artico"><span
+                        class="theme-dot iceberg"></span> Iceberg <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="volcano" data-label="Vulcano Attivo"><span
+                        class="theme-dot volcano"></span> Volcano <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="emerald" data-label="Smeraldo"><span
+                        class="theme-dot emerald"></span> Emerald <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="copper" data-label="Rame Antico"><span
+                        class="theme-dot copper"></span> Copper <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="starlight" data-label="Luce Stellare"><span
+                        class="theme-dot starlight"></span> Starlight <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="lava" data-label="Lava Fluida"><span
+                        class="theme-dot lava"></span> Lava <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="moss" data-label="Muschio di Bosco"><span
+                        class="theme-dot moss"></span> Forest Moss <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="peach" data-label="Peach Fuzz"><span
+                        class="theme-dot peach"></span> Peach Fuzz <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="moonlight" data-label="Chiaro di Luna"><span
+                        class="theme-dot moonlight"></span> Moonlight <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="toscana" data-label="Toscana"><span
+                        class="theme-dot toscana"></span> Toscana <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="blueprint" data-label="Blueprint"><span
+                        class="theme-dot blueprint"></span> Blueprint <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="cybergold" data-label="Cyber Gold"><span
+                        class="theme-dot cybergold"></span> Cyber Gold <span class="premium-crown">👑</span></div>
                   </div>
-
                 </div>
+
                 <div class="stat-card" style="margin-top: 20px;">
                   <div class="stat-label">Caratteri e Testo</div>
                   <ul class="setting-list">
@@ -924,11 +892,6 @@
                 <div class="stat-card">
                   <div class="stat-label">Comportamento Editor & Sicurezza</div>
                   <ul class="setting-list">
-                    <!--<li>
-                      <label for="set-fast-delete">Eliminazione Rapida Markdown<br><small
-                          style="color:var(--text-3);">Backspace elimina interi blocchi di codice</small></label>
-                      <input type="checkbox" id="set-fast-delete">
-                    </li>-->
                     <li>
                       <label for="set-auto-save">Salvataggio Automatico <span
                           style="color: var(--badge-warn); font-size: 10px;">BETA</span><br><small
@@ -940,17 +903,6 @@
                           style="color:var(--text-3);">Le note eliminate spariscono all'istante</small></label>
                       <input type="checkbox" id="set-auto-destroy">
                     </li>
-                    <!--<li>
-                      <label for="set-autocomplete">
-                        Autocompletamento Link <code>[[...]]</code>
-                        <span
-                          style="color: var(--accent); font-size: 10px; margin-left: 5px; font-weight: bold;">NEW</span>
-                        <br>
-                        <small style="color:var(--text-3);">Suggerisce i titoli delle tue note mentre scrivi per
-                          collegarle</small>
-                      </label>
-                      <input type="checkbox" id="set-autocomplete" checked>
-                    </li>-->
                   </ul>
                 </div>
               </section>
@@ -991,6 +943,7 @@
                   </div>
                 </div>
               </section>
+
               <section id="tab-layout" class="settings-tab-panel">
                 <div class="sub-nav-header">
                   <button class="sub-nav-item active" data-sub="sub-griglia">🃏 Griglia Card</button>
@@ -1095,7 +1048,6 @@
     </div>
   </div>
 
-
   <div id="dragOverlay" class="drag-overlay">
     <div class="drag-zone-container">
       <div id="dropZoneTrash" class="drop-zone trash-zone hidden">
@@ -1157,7 +1109,6 @@
         <li><code>**testo**</code> per <b>Grassetto</b></li>
         <li><code>*testo*</code> per <i>Corsivo</i></li>
         <li><code>[x] testo</code> per generare una Checklist</li>
-        <!--<li><code>```</code> (3 backtick) per un blocco di codice colorato</li>-->
         <li><code>`codice`</code> (1 backtick) per codice in linea</li>
         <li><code>[[Titolo Nota]]</code> per link a un'altra nota</li>
       </ul>
@@ -1215,14 +1166,12 @@
 
         <div class="modal-right">
           <div style="margin-bottom: 15px; padding-right: 35px;">
-
             <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px;">
               <input type="text" id="modalTitle" class="input-field" disabled
                 style="font-weight: bold; font-size: 16px; flex: 1; margin: 0;">
               <button id="exportNoteBtn" class="btn" title="Esporta Nota (PDF/MD)"
                 style="padding: 10px 15px; font-size: 16px; background: var(--bg-hover); color: var(--text-1); border: 1px solid var(--border);">📥</button>
             </div>
-
             <div class="form-row">
               <div
                 style="display: flex; align-items: center; gap: 10px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; flex: 1;">
@@ -1236,14 +1185,11 @@
           </div>
           <div
             style="position: relative; flex: 1; display: flex; flex-direction: column; min-height: 250px; width: 100%;">
-
             <div id="modalRichTextDisplay"
               style="flex: 1; overflow-y: auto; background: transparent; border: none; margin: 0; padding: 5px; color: var(--text-2); line-height: 1.6;">
             </div>
-
             <textarea id="modalDesc" class="hidden" placeholder="Modifica descrizione..."
               style="flex: 1; width: 100%; background: var(--bg-card2); color: var(--text-1); border: 1px solid var(--border); border-radius: 8px; padding: 12px 35px 12px 12px; resize: none; outline: none; margin: 0; font-family: inherit;"></textarea>
-
             <button id="zenModalBtn" class="hidden" type="button" title="Zen Mode"
               style="position: absolute; bottom: 10px; right: 10px; background: none; border: none; cursor: pointer; font-size: 20px; z-index: 10; color: var(--text-1); opacity: 0.5; transition: 0.2s;">⭐</button>
           </div>
@@ -1295,8 +1241,7 @@
               <div id="modalAutoSaveStatus"
                 style="flex: 1; text-align: center; color: var(--text-2); font-size: 13px; padding: 10px 0; font-weight: bold; background: var(--bg-hover); border-radius: 6px;">
               </div>
-              <button id="modalDoneBtn" class="btn" style="background: var(--accent); flex: 1;">✅ Fine
-                Modifica</button>
+              <button id="modalDoneBtn" class="btn" style="background: var(--accent); flex: 1;">✅ Fine Modifica</button>
             </div>
 
             <button id="modalDeleteBtn" class="btn btn-danger">🗑️ Elimina</button>
@@ -1305,7 +1250,6 @@
       </div>
     </div>
   </div>
-
 
   <div id="fullChartModal" class="modal-overlay hidden" style="z-index: 3500;">
     <div class="modal-card"
@@ -1317,6 +1261,7 @@
       </div>
     </div>
   </div>
+
   <div id="celebrationModal" class="modal-overlay hidden" style="z-index: 4000;">
     <div class="auth-card"
       style="max-width: 350px; text-align: center; border: 2px solid var(--accent); box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.4); background: var(--bg-card);">
@@ -1331,6 +1276,7 @@
         style="background: var(--accent); font-size: 16px;">Fantastico!</button>
     </div>
   </div>
+
   <div id="loader" class="visible">
     <div class="loader-content" style="text-align: center; width: 80%; max-width: 300px;">
       <div class="logo-icon"
@@ -1340,7 +1286,6 @@
           <circle class="star s2" cx="12" cy="5" r="3" fill="currentColor" />
           <circle class="star s3" cx="19" cy="14" r="2.2" fill="currentColor" />
           <circle class="star s4" cx="14" cy="20" r="1.8" fill="currentColor" />
-
           <line class="const-line" x1="5" y1="17" x2="12" y2="5" stroke="currentColor" stroke-width="1.2" />
           <line class="const-line" x1="12" y1="5" x2="19" y2="14" stroke="currentColor" stroke-width="1.2" />
           <line class="const-line" x1="19" y1="14" x2="14" y2="20" stroke="currentColor" stroke-width="1.2" />
@@ -1355,13 +1300,14 @@
       </div>
     </div>
   </div>
+
   <div id="toast">Messaggio</div>
+
   <div id="gamificationHelpModal" class="modal-overlay hidden" style="z-index: 3200;">
     <div class="auth-card" style="max-width: 400px; text-align: left;">
       <h2 style="color: var(--accent); margin-bottom: 15px;">Guida ai Punti (XP)</h2>
       <p style="color: var(--text-2); font-size: 13px; margin-bottom: 20px;">Ecco come puoi far salire di livello il tuo
         profilo Zenith:</p>
-
       <ul style="color: var(--text-1); font-size: 14px; line-height: 2; list-style: none; padding: 0;">
         <li>📝 <strong>Nuova Nota:</strong> +50 XP <small style="color: var(--text-3);">(Min. 20 car. / Max 5 al
             giorno)</small></li>
@@ -1370,16 +1316,15 @@
         </li>
         <li>🧹 <strong>Svuota Cestino:</strong> +30 XP <small style="color: var(--text-3);">(Ogni 24 ore)</small></li>
       </ul>
-
       <div
         style="margin-top: 20px; padding: 10px; background: var(--bg-card2); border-radius: 8px; border-left: 3px solid var(--badge-warn-t); font-size: 12px; color: var(--text-2);">
         💡 <strong>Nota:</strong> I limiti giornalieri servono a mantenere il sistema bilanciato. Continua a scrivere
         ogni giorno per sbloccare tutti i badge!
       </div>
-
       <button id="closeGamiHelpBtn" class="btn btn-full" style="margin-top: 25px;">Ho capito!</button>
     </div>
   </div>
+
   <div id="paywallModal" class="modal-overlay hidden" style="z-index: 6000; backdrop-filter: blur(12px);">
     <div class="auth-card glass-card" style="max-width: 650px; width: 90%; padding: 30px; text-align: center;">
       <h2 style="color: var(--text-1); margin-bottom: 5px;">Scegli il tuo prossimo livello</h2>
@@ -1387,7 +1332,6 @@
         il tuo flusso di lavoro.</p>
 
       <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 25px;">
-
         <div class="feature-box"
           style="flex: 1; min-width: 250px; border: 1px solid var(--border); background: var(--bg-card2); opacity: 0.7;">
           <div style="font-size: 24px; margin-bottom: 10px;">🌱</div>
@@ -1428,14 +1372,15 @@
         tardi...</button>
     </div>
   </div>
-  <div id="autocomplete-menu" class="hidden">
-  </div>
+
+  <div id="autocomplete-menu" class="hidden"></div>
 
   <div id="settings-actions-bar">
     <span>Hai modifiche non salvate!</span>
     <button id="applySettingsBtn" class="btn" style="background: var(--badge-ok-t); padding: 8px 20px;">✅
       Applica</button>
   </div>
+
   <div id="zen-overlay">
     <button id="exitZenBtn">❌ Esci (Esc)</button>
     <div class="zen-editor-container">
@@ -1461,17 +1406,18 @@
   <script src="./js/TagManager.js"></script>
   <script src="./js/GamificationManager.js"></script>
   <script src="./js/ZenithEngine.js"></script>
+
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
           .then(registration => {
             console.log('✅ Service Worker registrato con successo!', registration.scope);
-            
-            // 🟢 LOGICA DEL TOAST DI AGGIORNAMENTO
+
+            // Logica del Toast di Aggiornamento
             registration.addEventListener('updatefound', () => {
               const newWorker = registration.installing;
-              
+
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                   const toast = document.getElementById('toast');
@@ -1481,7 +1427,7 @@
                   `;
                   toast.style.pointerEvents = 'auto';
                   toast.classList.add('show');
-                  
+
                   document.getElementById('reloadAppBtn').addEventListener('click', () => {
                     newWorker.postMessage({ action: 'skipWaiting' });
                   });
@@ -1489,22 +1435,17 @@
               });
             });
 
-            // ==========================================
-            // 📡 NUOVI SENSORI DI RISVEGLIO
-            // ==========================================
-
-            // 1. Quando il telefono ritrova la connessione (es. toglie Modalità Aereo)
+            // Sensori di Risveglio: Controllo aggiornamenti online/visibility
             window.addEventListener('online', () => {
-                console.log("🌐 Connessione ripristinata! Controllo aggiornamenti...");
-                registration.update(); // Forza il controllo del file sw.js sul server
+              console.log("🌐 Connessione ripristinata! Controllo aggiornamenti...");
+              registration.update();
             });
 
-            // 2. Quando l'utente torna sull'app dopo aver fatto altro
             document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible') {
-                    console.log("👀 App di nuovo visibile! Controllo aggiornamenti...");
-                    registration.update();
-                }
+              if (document.visibilityState === 'visible') {
+                console.log("👀 App di nuovo visibile! Controllo aggiornamenti...");
+                registration.update();
+              }
             });
 
           })
@@ -1512,6 +1453,7 @@
             console.error('❌ Errore nella registrazione del Service Worker:', error);
           });
 
+        // Ascolto del cambio controller per ricaricare la pagina in sicurezza
         let refreshing = false;
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           if (!refreshing) {

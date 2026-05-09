@@ -1,27 +1,31 @@
 /**
  * @class FileSystemManager
- * @description Gestisce l'architettura relazionale delle cartelle (Workspace e Sottocartelle),
- * l'albero di navigazione nella sidebar e le funzionalità di migrazione dati dal vecchio sistema.
+ * @description Gestisce l'intera architettura relazionale delle cartelle (Workspace e Sottocartelle),
+ * inclusa l'interfaccia ad albero (tree view) nella sidebar, la breadcrumb di navigazione
+ * superiore e la logica di migrazione retroattiva dal vecchio sistema piatto.
  */
 class FileSystemManager {
     /**
-     * Inizializza il FileSystem.
-     * @param {Object} app - L'istanza principale dell'applicazione (NoteFlowApp).
+     * Costruttore: Inizializza il File System.
+     * @param {Object} app - L'istanza principale dell'applicazione (ZenithEngine).
      */
     constructor(app) {
         this.app = app;
-        this.currentFolderId = "root"; // "root" significa "Tutte le Note"
-        this.expandedFolders = new Set(); // Tiene traccia di quali cartelle sono aperte nella UI
+        // 'root' rappresenta la vista globale ("Tutte le Note")
+        this.currentFolderId = "root"; 
+        
+        // Traccia lo stato di espansione (Accordion) delle cartelle nella sidebar
+        this.expandedFolders = new Set(); 
     }
 
     /**
-     * Avvia il gestore delle cartelle assicurandosi che la struttura dati esista
-     * nell'oggetto utente e avviando le procedure di migrazione se necessarie.
+     * Avvia il gestore: verifica che la struttura dati esista nell'account utente
+     * e lancia la procedura di controllo/migrazione dei vecchi dati.
      */
     init() {
         if (!this.app.loggedUser) return;
 
-        // FIX CRITICO: Se per qualche motivo folders è sparito, lo ricreiamo subito
+        // Fallback di sicurezza: ricrea l'array folders se corrotto o assente
         if (!this.app.loggedUser.folders) {
             this.app.loggedUser.folders = [];
         }
@@ -30,51 +34,49 @@ class FileSystemManager {
     }
 
     /**
-     * Collega gli ascoltatori di eventi base (es. pulsante per creare la cartella root).
+     * Collega gli ascoltatori di eventi dell'interfaccia (es. creazione cartella Root).
      */
     initEvents() {
-        // I bottoni per ora rimangono gli stessi del vecchio sistema
         document.getElementById("addWorkspaceBtn")?.addEventListener("click", () => this.addFolderPrompt(null));
     }
 
     /**
-     * --- 1. MIGRAZIONE DATI (Silenziosa e sicura) ---
-     * Controlla se l'utente sta usando il vecchio sistema array lineare ("workspaces").
-     * In tal caso, converte tutte le vecchie stringhe in oggetti Cartella veri e propri
-     * con ID univoco, aggiornando di conseguenza i riferimenti all'interno delle note.
+     * Controlla se l'utente utilizza ancora il vecchio sistema lineare "workspaces" (Array di stringhe).
+     * Se sì, converte le vecchie cartelle in nuovi Oggetti relazionali con ID univoci
+     * e aggiorna tutti i riferimenti all'interno delle note esistenti.
      */
     migrateDataIfNeeded() {
         const user = this.app.loggedUser;
 
-        // Se l'utente ha già il nuovo array "folders", la migrazione è già stata fatta
+        // Migrazione già completata se esiste l'array corretto
         if (user.folders) return;
 
-        console.log("🛠️ Esecuzione migrazione dati verso File System...");
+        console.log("🛠️ Esecuzione migrazione dati verso File System relazionale...");
         user.folders = [];
 
-        // Se ha dei vecchi workspaces (array di stringhe)
         if (user.workspaces && Array.isArray(user.workspaces)) {
             user.workspaces.forEach(wsName => {
-                if (wsName === "Generale") return; // Ignoriamo "Generale"
+                // "Generale" viene bypassato (le note senza cartella finiscono automaticamente in Root)
+                if (wsName === "Generale") return; 
 
-                const newFolderId = "f_" + Date.now() + Math.random().toString(36).substr(2, 5);
+                const newFolderId = "f_" + Date.now() + Math.random().toString(36).substring(2, 7);
                 user.folders.push({
                     id: newFolderId,
                     name: wsName,
-                    parentId: null // Le vecchie cartelle diventano tutte Root
+                    parentId: null 
                 });
 
-                // Aggiorna tutte le note che appartenevano a quel workspace
+                // Aggiornamento bulk delle note associate a questa vecchia cartella
                 user.notes.forEach(note => {
                     if (note.workspace === wsName) {
-                        note.folderId = newFolderId; // Nuovo sistema
-                        delete note.workspace;       // Rimuovi vecchio campo
+                        note.folderId = newFolderId; 
+                        delete note.workspace;       
                     }
                 });
             });
         }
 
-        // Pulizia finale delle note rimaste senza cartella
+        // Pulizia: le vecchie note rimaste nel limbo vengono riportate in Root
         user.notes.forEach(note => {
             if (note.workspace || note.workspace === "") {
                 note.folderId = null;
@@ -82,21 +84,21 @@ class FileSystemManager {
             }
         });
 
-        // Elimina il vecchio array
+        // Distruzione del vecchio sistema
         delete user.workspaces;
         this.app.saveUser();
-        console.log("✅ Migrazione completata con successo!");
+        console.log("✅ Migrazione File System completata con successo!");
     }
 
     /**
-     * --- 2. GESTIONE DATI (CRUD) ---
-     * Crea una nuova cartella nel database locale assegnandole un ID generato.
-     * @param {string} name - Il nome della cartella inserito dall'utente.
-     * @param {string|null} [parentId=null] - ID della cartella madre (se è una sottocartella) o null se è nella root.
+     * Crea un nuovo nodo cartella nel database e aggiorna la UI e i punteggi.
+     * @param {string} name - Il nome assegnato dall'utente alla cartella.
+     * @param {string|null} [parentId=null] - L'ID della cartella genitrice (null = livello Root).
      */
     createFolder(name, parentId = null) {
         if (!name || name.trim().length === 0) return;
-        const newFolderId = "f_" + Date.now() + Math.random().toString(36).substr(2, 5);
+        
+        const newFolderId = "f_" + Date.now() + Math.random().toString(36).substring(2, 7);
 
         this.app.loggedUser.folders.push({
             id: newFolderId,
@@ -104,79 +106,95 @@ class FileSystemManager {
             parentId: parentId
         });
 
+        // Espande automaticamente la cartella madre appena ha un figlio
         if (parentId) this.expandedFolders.add(parentId);
 
         this.app.saveUser();
         this.renderSidebar();
         this.updateSelects();
         if (this.app.notes) this.app.notes.renderNotes();
-        Utils.showToast("Cartella creata!");
         
-        // 🎮 GAMIFICATION: Premio XP con limite giornaliero di 3
-        const g = this.app.gamification;
-        if (g) {
-            if (g.canGainDailyXP('foldersCreated', 3)) {
-                g.addXP(15, "Nuova Cartella");
+        if (typeof Utils !== 'undefined') Utils.showToast("Cartella creata!");
+        
+        // Gamification Hook: Esperienza per creazione cartelle
+        const gamification = this.app.gamification;
+        if (gamification) {
+            if (gamification.canGainDailyXP('foldersCreated', 3)) {
+                gamification.addXP(15, "Nuova Cartella");
             }
-            g.unlockBadge("first_folder"); // Il badge si sblocca comunque alla prima
+            gamification.unlockBadge("first_folder"); 
         }
 
-        if (this.app.currentPage === 'mappa') this.app.graph.render();
+        // Graph Hook: Aggiorna i nodi se l'utente è sulla pagina della mappa neurale
+        if (this.app.currentPage === 'mappa' && this.app.graph) {
+            this.app.graph.render();
+        }
     }
+
     /**
-     * Elimina una cartella e l'intero suo ramo (tutte le sottocartelle discendenti).
-     * Le note contenute non vengono cancellate, ma spostate alla root ("Tutte le Note").
-     * @param {string} folderId - L'ID univoco della cartella da eliminare.
+     * Elimina ricorsivamente una cartella e tutto il suo ramo discendente.
+     * Le note fisiche non vengono cancellate, ma "orfanizzate" per sicurezza, tornando in Root.
+     * @param {string} folderId - L'ID della cartella target.
      */
     deleteFolder(folderId) {
         const folder = this.app.loggedUser.folders.find(f => f.id === folderId);
         if (!folder) return;
 
-        if (confirm(`Sei sicuro di voler eliminare la cartella "${folder.name}" e tutte le sue sottocartelle? Le note all'interno andranno in "Tutte le Note".`)) {
-            // Troviamo tutti gli ID di questa cartella e dei suoi "discendenti" (figli, nipoti, ecc.)
+        const isConfirmed = confirm(`Sei sicuro di voler eliminare la cartella "${folder.name}" e tutte le sue sottocartelle? Le note all'interno andranno salvate in "Tutte le Note".`);
+        if (isConfirmed) {
             const idsToDelete = this.getDescendantIds(folderId);
             idsToDelete.push(folderId);
 
-            // Rimuoviamo le cartelle dal database
+            // Rimozione fisica cartelle dal database
             this.app.loggedUser.folders = this.app.loggedUser.folders.filter(f => !idsToDelete.includes(f.id));
 
-            // Orfanizziamo le note (le mandiamo in Root)
+            // Protezione dati: le note vengono sganciate dalle cartelle eliminate
             this.app.loggedUser.notes.forEach(note => {
                 if (idsToDelete.includes(note.folderId)) {
                     note.folderId = null;
                 }
             });
 
-            if (idsToDelete.includes(this.currentFolderId)) this.currentFolderId = "root";
+            // Se l'utente era all'interno di una cartella eliminata, viene ributtato in Root
+            if (idsToDelete.includes(this.currentFolderId)) {
+                this.currentFolderId = "root";
+            }
 
             this.app.saveUser();
             this.renderSidebar();
             this.updateSelects();
-            if (document.getElementById("page-mie-note").classList.contains("active")) this.app.navigate('mie-note');
+            
+            if (document.getElementById("page-mie-note")?.classList.contains("active")) {
+                this.app.navigate('mie-note');
+            }
 
-            if (this.app.currentPage === 'mappa') this.app.graph.render(); // Aggiorna se visibile
+            if (this.app.currentPage === 'mappa' && this.app.graph) {
+                this.app.graph.render(); 
+            }
         }
     }
 
     /**
-     * Trova tutti gli ID delle cartelle figlie e dei loro discendenti in modo ricorsivo.
-     * @param {string} parentId - L'ID della cartella di partenza.
-     * @returns {string[]} Array contenente gli ID di tutti i discendenti.
+     * Calcola in modo ricorsivo l'albero di tutti i discendenti di un nodo.
+     * @param {string} parentId - L'ID del nodo di partenza.
+     * @returns {string[]} Array contenente gli ID di tutti i discendenti (figli, nipoti...).
      */
     getDescendantIds(parentId) {
         let descendantIds = [];
         const children = this.app.loggedUser.folders.filter(f => f.parentId === parentId);
+        
         children.forEach(child => {
             descendantIds.push(child.id);
             descendantIds = descendantIds.concat(this.getDescendantIds(child.id));
         });
+        
         return descendantIds;
     }
 
     /**
-     * --- 3. UTILITIES PER L'INTERFACCIA ---
-     * Mostra un prompt testuale per richiedere all'utente il nome della cartella da creare.
-     * @param {string|null} [parentId=null] - L'ID del nodo genitore opzionale.
+     * Innesca un prompt nativo del browser per richiedere l'inserimento
+     * del nome di una nuova cartella in fase di creazione.
+     * @param {string|null} [parentId=null] - ID della cartella madre.
      */
     addFolderPrompt(parentId = null) {
         const name = prompt("Nome della nuova cartella:");
@@ -184,44 +202,49 @@ class FileSystemManager {
     }
 
     /**
-     * Apre un prompt per permettere all'utente di modificare il nome di una cartella.
-     * @param {string} folderId - L'ID della cartella da rinominare.
+     * Innesca un prompt nativo per la ridenominazione sicura di una cartella esistente.
+     * @param {string} folderId - ID della cartella target.
      */
     renameFolderPrompt(folderId) {
         const folder = this.app.loggedUser.folders.find(f => f.id === folderId);
         if (!folder) return;
+        
         const newName = prompt("Inserisci il nuovo nome per la cartella:", folder.name);
+        
         if (newName && newName.trim().length > 0) {
             folder.name = newName.trim();
             this.app.saveUser();
             this.renderSidebar();
             this.updateSelects();
-            this.app.notes.renderNotes(); // Rinfresca il titolo se siamo dentro
-            Utils.showToast("Cartella rinominata!");
-
-            if (this.app.currentPage === 'mappa') this.app.graph.render(); // Aggiorna se visibile
+            
+            if (this.app.notes) this.app.notes.renderNotes(); 
+            if (typeof Utils !== 'undefined') Utils.showToast("Cartella rinominata!");
+            if (this.app.currentPage === 'mappa' && this.app.graph) this.app.graph.render(); 
         }
     }
 
     /**
-     * Calcola il percorso (breadcrumb) risalendo l'albero partendo da una cartella specifica.
-     * @param {string} folderId - L'ID della cartella destinazione.
-     * @returns {Array<{id: string, name: string}>} L'array del percorso ordinato, iniziando da "Tutte le Note".
+     * Risale l'albero relazionale per generare la sequenza di navigazione (Breadcrumb).
+     * @param {string} folderId - ID della cartella bersaglio.
+     * @returns {Array<{id: string, name: string}>} L'array del percorso di navigazione partendo dalla root.
      */
     getBreadcrumbPath(folderId) {
-        if (folderId === "root" || !folderId) return [{ id: "root", name: "Tutte le Note" }];
+        // Ritorno immediato se siamo già nella visualizzazione Root globale
+        if (folderId === "root" || !folderId) {
+            return [{ id: "root", name: "Tutte le Note" }];
+        }
 
         let path = [];
         let currentId = folderId;
 
-        // Risale l'albero fino alla root
+        // Navigazione a ritroso (Bottom-Up) dell'albero delle cartelle
         while (currentId) {
             const folder = this.app.loggedUser.folders.find(f => f.id === currentId);
             if (folder) {
                 path.unshift({ id: folder.id, name: folder.name });
                 currentId = folder.parentId;
             } else {
-                break; // Sicurezza per evitare loop
+                break; // Break loop di sicurezza
             }
         }
 
@@ -230,73 +253,83 @@ class FileSystemManager {
     }
 
     /**
-     * Apre e mostra i contenuti di una determinata cartella, gestendo la navigazione della UI,
-     * il salvataggio dello stato per i ricaricamenti pagina e costruendo la breadcrumb dinamica.
-     * @param {string} folderId - L'ID della cartella da mostrare ("root" mostra tutto il database).
+     * Motore di visualizzazione principale della UI. Sposta l'utente dentro una cartella specifica,
+     * aggiorna lo stato visivo globale, inietta il breadcrumb navigabile e lancia il render delle note interne.
+     * @param {string} folderId - ID della cartella da visionare ('root' per tutte le note).
      */
     showFolder(folderId) {
-        if (this.app.settingsMgr.revertPreview) this.app.settingsMgr.revertPreview();
+        if (this.app.settingsMgr?.revertPreview) {
+            this.app.settingsMgr.revertPreview();
+        }
+        
         this.currentFolderId = folderId;
 
-        // SALVATAGGIO STATO: Ricorda l'ID della cartella specifica
-        localStorage.setItem("noteFlow_lastFolderId", folderId);
-        localStorage.setItem("noteFlow_lastPage", "mie-note"); // Assicura che la pagina sia corretta
-        // Gestione Navigazione UI
+        // Salvataggio stato UI nel browser per sessioni persistenti
+        localStorage.setItem("zenith_lastFolderId", folderId); // Corretto nome chiave standard Zenith
+        localStorage.setItem("zenith_lastPage", "mie-note"); 
+
+        // Gestione CSS Navigazione Base
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.getElementById("page-mie-note").classList.add("active");
+        document.getElementById("page-mie-note")?.classList.add("active");
+        
         document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
         document.querySelector(`[data-page="mie-note"]`)?.classList.add("active");
 
         this.renderSidebar();
 
-        // FIX: BREADCRUMBS INTERATTIVI
+        // ----------------------------------------------------
+        // Rendering Breadcrumb Interattivo nella Topbar
+        // ----------------------------------------------------
         const path = this.getBreadcrumbPath(folderId);
         const topbarTitle = document.getElementById("topbar-title");
-        topbarTitle.innerHTML = ""; // Pulizia
+        
+        if (topbarTitle) {
+            topbarTitle.innerHTML = ""; // Pulizia preventiva
+            
+            path.forEach((p, index) => {
+                const span = document.createElement("span");
+                span.className = "breadcrumb-item";
+                span.textContent = p.name;
+                span.onclick = () => this.showFolder(p.id);
+                topbarTitle.appendChild(span);
 
-        path.forEach((p, index) => {
-            const span = document.createElement("span");
-            span.className = "breadcrumb-item";
-            span.textContent = p.name;
-            span.onclick = () => this.showFolder(p.id);
-            topbarTitle.appendChild(span);
+                // Aggiunge il separatore testuale '/' se non è l'ultimo nodo
+                if (index < path.length - 1) {
+                    const sep = document.createElement("span");
+                    sep.className = "breadcrumb-separator";
+                    sep.textContent = "/";
+                    topbarTitle.appendChild(sep);
+                }
+            });
+        }
 
-            if (index < path.length - 1) {
-                const sep = document.createElement("span");
-                sep.className = "breadcrumb-separator";
-                sep.textContent = "/";
-                topbarTitle.appendChild(sep);
-            }
-        });
-
-        this.app.notes.renderNotes();
+        if (this.app.notes) {
+            this.app.notes.renderNotes();
+        }
     }
 
     /**
-     * --- 4. RENDER RICORSIVO (Albero Reale) ---
-     * Funzione che disegna fisicamente l'albero di navigazione delle cartelle nella sidebar.
-     * Si richiama da sola (ricorsione) per calcolare l'indentazione corretta per figli, nipoti, ecc.
-     * @param {string|null} [parentId=null] - L'ID del nodo di partenza (null = Root).
-     * @param {HTMLElement} [container=document.getElementById("sidebarWorkspaces")] - Il div bersaglio nell'HTML.
-     * @param {number} [level=0] - Contatore della profondità dell'albero, usato per i margini CSS.
-     */
-    /**
-     * --- 4. RENDER RICORSIVO CON TENDINE (METODO SICURO) ---
-     */
-    /**
-     * Rende la barra laterale delle cartelle (Supporta Sottocartelle e Tendine)
+     * Funzione Core (Ricorsiva) che inietta l'HTML per la costruzione 
+     * ad albero della vista laterale (Sidebar), completa di bottoni operativi (Add/Delete/Expand).
+     * @param {string|null} [parentId=null] - ID del nodo padre (determina il livello dell'albero).
+     * @param {HTMLElement} [container] - L'elemento target dell'HTML.
+     * @param {number} [level=0] - Contatore per determinare l'indentazione visiva CSS.
      */
     renderSidebar(parentId = null, container = document.getElementById("sidebarWorkspaces"), level = 0) {
-        if (!container) return;
+        if (!container || !this.app.loggedUser || !this.app.loggedUser.folders) return;
+        
         if (level === 0) container.innerHTML = "";
 
-        if (!this.app.loggedUser || !this.app.loggedUser.folders) return;
+        const placeholder = document.getElementById("noWorkspacesPlaceholder");
+            if (placeholder) {
+                placeholder.style.display = (this.app.loggedUser.folders.length === 0) ? "block" : "none";
+            }
 
-        // Filtra solo le cartelle di questo livello
+        // Isola le cartelle appartenenti a questo preciso livello dell'albero
         const folders = this.app.loggedUser.folders.filter(f => f.parentId === parentId);
 
         folders.forEach(folder => {
-            // Controlla se questa cartella ha delle figlie
+            // Controllo per attivare eventuale iconografia "folder pieno" o chevron (tendina)
             const hasChildren = this.app.loggedUser.folders.some(f => f.parentId === folder.id);
 
             const folderDiv = document.createElement("div");
@@ -305,10 +338,13 @@ class FileSystemManager {
 
             const itemDiv = document.createElement("div");
             itemDiv.className = `workspace-item ${this.currentFolderId === folder.id ? 'active' : ''}`;
+            
+            // Indentazione matematica per evidenziare la gerarchia padre-figlio
             itemDiv.style.paddingLeft = `${level * 12}px`;
 
             const icon = level > 0 ? '<span class="sidebar-depth-indicator">↳</span>' : '📁 ';
 
+            // Costruzione HTML della riga cartella (Testo e Container Azioni)
             itemDiv.innerHTML = `
                 <div class="ws-left" style="display: flex; align-items: center; overflow: hidden; flex: 1;">
                     ${icon}
@@ -329,9 +365,10 @@ class FileSystemManager {
                 </div>
             `;
             
-            // Eventi Click (con stopPropagation per non accavallarli)
+            // Event Listener primario: Apri la cartella
             itemDiv.onclick = () => this.showFolder(folder.id);
 
+            // Delega Eventi per i tasti secondari (Usa stopPropagation per evitare che il click inneschi l'apertura cartella)
             const toggleBtn = itemDiv.querySelector('.ws-toggle-btn');
             if (toggleBtn) {
                 toggleBtn.onclick = (e) => {
@@ -358,7 +395,8 @@ class FileSystemManager {
 
             folderDiv.appendChild(itemDiv);
 
-            // Generazione Ricorsiva (disegna le figlie DENTRO la tendina)
+            // CHIAMATA RICORSIVA: Se ci sono sottocartelle, la funzione richiama se stessa
+            // per costruire il "Ramo Figlio" posizionandolo fisicamente all'interno del nodo corrente (per il sistema a tendina).
             if (hasChildren) {
                 const subfoldersDiv = document.createElement("div");
                 subfoldersDiv.className = "ws-subfolders";
@@ -371,17 +409,19 @@ class FileSystemManager {
     }
 
     /**
-     * Aggiorna programmaticamente tutti i menu a tendina (<select>) dell'applicazione
-     * (es. nel modulo di creazione nota o nella modale di modifica) con le cartelle correnti.
+     * Aggiorna programmaticamente i menù a tendina (<select>) HTML.
+     * Viene usato nei form di "Crea Nota" o "Modifica Nota" per mostrare la lista delle cartelle disponibili.
      */
     updateSelects() {
         const selects = [document.getElementById("noteWorkspace"), document.getElementById("modalWorkspace")];
-        const folders = this.app.loggedUser.folders || [];
+        const folders = this.app.loggedUser?.folders || [];
 
-        // Per ora li buttiamo dentro come lista piatta
-        const optionsHtml = `<option value="">Nessuna Cartella</option>` +
+        // Genera una lista piatta per le tendine tradizionali (permette la selezione di "Nessuna")
+        const optionsHtml = `<option value="">Nessuna Cartella (Root)</option>` +
             folders.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
 
-        selects.forEach(select => { if (select) select.innerHTML = optionsHtml; });
+        selects.forEach(select => { 
+            if (select) select.innerHTML = optionsHtml; 
+        });
     }
 }
