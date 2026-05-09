@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <title>Zenith - Gestione Note</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a0a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Zenith">
+  <link rel="stylesheet" href="Zenith_css.css">
+</head>
+
+<body class="dark">
+
+  <div id="landing-page" class="hidden">
+    <nav class="landing-nav">
+      <div class="logo-icon" style="width: 46px; height: 46px; border-radius: 12px;">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle class="star s1" cx="5" cy="17" r="2.2" fill="currentColor" />
+          <circle class="star s2" cx="12" cy="5" r="3" fill="currentColor" />
+          <circle class="star s3" cx="19" cy="14" r="2.2" fill="currentColor" />
+          <circle class="star s4" cx="14" cy="20" r="1.8" fill="currentColor" />
+
+          <line class="const-line" x1="5" y1="17" x2="12" y2="5" stroke="currentColor" stroke-width="1.2" />
+          <line class="const-line" x1="12" y1="5" x2="19" y2="14" stroke="currentColor" stroke-width="1.2" />
+          <line class="const-line" x1="19" y1="14" x2="14" y2="20" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+      </div>
+      <div style="font-weight: bold; font-size: 20px; flex: 1; margin-left: 12px; color: var(--text-1);">Zenith</div>
+
+      <button id="landingThemeToggle" class="icon-btn-small"
+        style="margin-right: 15px; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+        title="Cambia Tema">🌓</button>
+
+      <button id="navLoginBtn" class="btn-text"
+        style="color: var(--text-2); margin-right: 20px; font-size: 15px;">Accedi</button>
+      <button id="navRegisterBtn" class="btn" style="border-radius: 30px; padding: 10px 24px;">Inizia Gratis</button>
+    </nav>
+
+    <header class="hero-section">
+      <h1 class="hero-title">Libera la tua mente.<br><span style="color: var(--accent);">Organizza il tuo flusso.</span>
+      </h1>
+      <p class="hero-subtitle">L'ambiente di lavoro che unisce la velocità del Markdown, la potenza del grafo
+        relazionale e la motivazione della Gamification.</p>
+      <button id="heroCtaBtn" class="btn"
+        style="font-size: 18px; padding: 16px 35px; border-radius: 30px; box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.3);">Entra
+        in Zenith</button>
+
+      <div class="floating-mockup">
+        <div class="mockup-header">
+          <span style="background: #ff5f56;"></span><span style="background: #ffbd2e;"></span><span
+            style="background: #27c93f;"></span>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar"></div>
+          <div class="mockup-content">
+            <div class="mockup-line" style="width: 60%;"></div>
+            <div class="mockup-line" style="width: 80%;"></div>
+            <div class="mockup-line" style="width: 40%; margin-bottom: 30px;"></div>
+            <div class="mockup-card-grid">
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="features-section">
+      <div class="feature-box">
+        <div class="feature-icon">⚡</div>
+        <h3 style="color: var(--text-1); margin-bottom: 10px;">Ultra Veloce</h3>
+        <p style="color: var(--text-2); font-size: 14px; line-height: 1.5;">Scrivi in Markdown puro con la nostra Zen
+          Mode senza distrazioni.</p>
+      </div>
+      <div class="feature-box">
+        <div class="feature-icon">🎮</div>
+        <h3 style="color: var(--text-1); margin-bottom: 10px;">Gamification</h3>
+        <p style="color: var(--text-2); font-size: 14px; line-height: 1.5;">Sblocca obiettivi, guadagna XP e mostra a
+          tutti il tuo livello "Pro".</p>
+      </div>
+      <div class="feature-box">
+        <div class="feature-icon">🔒</div>
+        <h3 style="color: var(--text-1); margin-bottom: 10px;">Privacy Locale</h3>
+        <p style="color: var(--text-2); font-size: 14px; line-height: 1.5;">I tuoi dati non lasciano mai il tuo
+          dispositivo. Protezione con PIN.</p>
+      </div>
+    </section>
+
+    <section class="testimonials-section"
+      style="padding: 60px 20px; max-width: 1000px; margin: 0 auto; text-align: center;">
+      <h2 style="font-size: 28px; margin-bottom: 40px; color: var(--text-1);">Creato per i veri pensatori</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        <div class="feature-box" style="padding: 25px; text-align: left; font-style: italic;">
+          "Zenith ha completamente cambiato il modo in cui studio. Il grafo relazionale è pura magia."
+          <div style="margin-top: 15px; font-weight: bold; font-style: normal; color: var(--accent);">— Marco, Studente
+            di Medicina</div>
+        </div>
+        <div class="feature-box" style="padding: 25px; text-align: left; font-style: italic;">
+          "La gamification mi spinge a tenere la mia casella di lavoro pulita. Non posso più farne a meno."
+          <div style="margin-top: 15px; font-weight: bold; font-style: normal; color: var(--accent);">— Elena, Project
+            Manager</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-section"
+      style="padding: 80px 20px; background: var(--bg-card2); text-align: center; margin-top: 40px;">
+      <h2 style="font-size: 28px; margin-bottom: 10px; color: var(--text-1);">Scegli il tuo piano</h2>
+      <p style="color: var(--text-2); margin-bottom: 40px;">Inizia gratis, espandi quando sei pronto.</p>
+
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+        <div class="feature-box" style="width: 300px; text-align: center; border-top: 4px solid var(--text-3);">
+          <h3 style="color: var(--text-1);">Piano Novizio</h3>
+          <div style="font-size: 32px; font-weight: bold; margin: 15px 0; color: var(--text-1);">Gratis</div>
+          <p style="color: var(--text-2); font-size: 14px; margin-bottom: 20px;">Ideale per iniziare.</p>
+          <ul
+            style="list-style: none; padding: 0; text-align: left; font-size: 14px; color: var(--text-1); line-height: 2; margin-bottom: 25px;">
+            <li>✔️ Organizzazione Note in Cartelle</li>
+            <li>✔️ Smart Tags e Ricerca Base</li>
+            <li>✔️ Sincronizzazione Offline</li>
+          </ul>
+          <button id="btnPlanFree" class="btn btn-full"
+            style="background: var(--bg-hover); color: var(--text-1);">Inizia Gratis</button>
+        </div>
+
+        <div class="feature-box" style="width: 300px; text-align: center; border-top: 4px solid var(--accent);">
+          <h3 style="color: var(--text-1);">Piano Guru</h3>
+          <div style="font-size: 32px; font-weight: bold; margin: 15px 0; color: var(--accent);">€4.99<span
+              style="font-size: 14px; color: var(--text-2);">/mese</span></div>
+          <p style="color: var(--text-2); font-size: 14px; margin-bottom: 20px;">Per i veri professionisti.</p>
+          <ul
+            style="list-style: none; padding: 0; text-align: left; font-size: 14px; color: var(--text-1); line-height: 2; margin-bottom: 25px;">
+            <li>✔️ Team Collaboration</li>
+            <li>✔️ Assistente Intelligenza Artificiale</li>
+            <li>✔️ Sincronizzazione Cloud (In arrivo)</li>
+          </ul>
+          <button id="btnPlanPro" class="btn btn-full" style="background: var(--accent);">Prova il Piano Guru</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="auth-modal" class="modal-overlay hidden" style="z-index: 5000; backdrop-filter: blur(8px);">
+    <div class="auth-card glass-card" style="text-align: left; position: relative;">
+      <button id="closeAuthModalBtn" class="modal-close" style="top: 15px; right: 15px;">&times;</button>
+
+      <div class="auth-tabs">
+        <button id="tabLogin" class="auth-tab active">Accedi</button>
+        <button id="tabRegister" class="auth-tab">Registrati</button>
+      </div>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="logEmail" class="input-field" placeholder="nome@esempio.com" required>
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="logPassword" class="input-field" placeholder="••••••••" required>
+            <span class="eye-icon" id="toggleLogPwd"></span>
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; font-size: 12px;">
+          <label class="checkbox-container"
+            style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text-2);">
+            <input type="checkbox" id="logRememberMe" style="cursor: pointer;">
+            Rimani collegato per 2 settimane
+          </label>
+          <a href="#" style="color: var(--accent); text-decoration: none; font-weight: bold;">Password dimenticata?</a>
+        </div>
+        <button type="submit" class="btn btn-full" id="loginSubmitBtn" style="font-size: 15px; padding: 14px;">Accedi al
+          Workspace</button>
+      </form>
+
+      <form id="registerForm" class="hidden">
+        <div style="display: flex; gap: 10px;">
+          <div class="input-group" style="flex: 1;">
+            <label>Nome</label>
+            <input type="text" id="regNome" class="input-field" placeholder="Mario" required>
+          </div>
+          <div class="input-group" style="flex: 1;">
+            <label>Cognome</label>
+            <input type="text" id="regCognome" class="input-field" placeholder="Rossi" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" class="input-field" placeholder="nome@esempio.com" required>
+        </div>
+        <div class="input-group">
+          <label>Crea Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="regPassword" class="input-field" placeholder="Minimo 8 caratteri" required>
+            <span class="eye-icon" id="toggleRegPwd"></span>
+          </div>
+          <div class="pwd-strength-container">
+            <div id="pwdStrengthBar" class="pwd-strength-bar"></div>
+          </div>
+          <div id="pwdStrengthText" style="font-size: 10px; color: var(--text-3); margin-top: 5px; text-align: right;">
+            Sicurezza: Troppo debole</div>
+        </div>
+        <label
+          style="display: flex; align-items: flex-start; gap: 10px; font-size: 11px; color: var(--text-2); margin-bottom: 20px; line-height: 1.5; cursor: pointer;">
+          <input type="checkbox" id="acceptTerms" required style="margin-top: 2px; accent-color: var(--accent);">
+          <span>Accetto i <a href="#" style="color: var(--accent);">Termini di Servizio</a> e dichiaro di aver letto la
+            <a href="#" style="color: var(--accent);">Privacy Policy</a>.</span>
+        </label>
+        <label class="checkbox-container"
+          style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text-2);">
+          <input type="checkbox" id="regRememberMe" style="cursor: pointer;">
+          Rimani collegato per 2 settimane
+        </label>
+        <button type="submit" class="btn btn-full" id="registerSubmitBtn" style="font-size: 15px; padding: 14px;">Crea
+          Account Gratuito</button>
+      </form>
+
+      <div class="social-login-divider"><span>Oppure entra con</span></div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-full social-btn" id="fakeGoogleBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              fill="#4285F4" />
+            <path
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              fill="#34A853" />
+            <path
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              fill="#FBBC05" />
+            <path
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              fill="#EA4335" />
+          </svg>
+          Google
+        </button>
+        <button class="btn btn-full social-btn github-btn" id="fakeGithubBtn"
+          style="background: #24292e; color: white; border: none;">
+          <svg viewBox="0 0 24 24" width="18" fill="white">
+            <path
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+          </svg> GitHub
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="app" class="hidden">
+
+    <aside id="sidebar" style="display: flex; flex-direction: column;">
+      <div class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle class="star s1" cx="5" cy="17" r="2.2" fill="currentColor" />
+            <circle class="star s2" cx="12" cy="5" r="3" fill="currentColor" />
+            <circle class="star s3" cx="19" cy="14" r="2.2" fill="currentColor" />
+            <circle class="star s4" cx="14" cy="20" r="1.8" fill="currentColor" />
+
+            <line class="const-line" x1="5" y1="17" x2="12" y2="5" stroke="currentColor" stroke-width="1.2" />
+            <line class="const-line" x1="12" y1="5" x2="19" y2="14" stroke="currentColor" stroke-width="1.2" />
+            <line class="const-line" x1="19" y1="14" x2="14" y2="20" stroke="currentColor" stroke-width="1.2" />
+          </svg>
+        </div>
+        <div style="flex: 1;">
+          <div class="logo-text">Zenith</div>
+          <div class="logo-sub">Pro Edition</div>
+        </div>
+        <button id="settingsBtn" class="icon-btn-small" title="Impostazioni">⚙️</button>
+      </div>
+
+      <nav class="sidebar-nav" style="flex: 1; overflow-y: auto;">
+        <div class="nav-section-label">Menu Principale</div>
+        <button class="nav-item active" data-page="dashboard"><span>📊</span> Dashboard</button>
+        <button class="nav-item" data-page="mie-note" id="navAllNotesBtn"><span>📝</span> Tutte le Note</button>
+        <button class="nav-item" data-page="mappa">
+          <span class="nav-icon">🕸️</span> Mappa Relazionale
+          <span class="premium-crown">👑</span>
+        </button>
+        <button class="nav-item" data-page="calendario"><span>📅</span> Calendario</button>
+        <button class="nav-item" data-page="cestino"><span>🗑️</span> Cestino</button>
+
+        <div class="nav-section-label"
+          style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+          I Miei Workspaces
+          <button id="addWorkspaceBtn" class="icon-btn-small" style="font-size: 14px; padding: 0 5px;"
+            title="Crea nuova cartella">+</button>
+        </div>
+        <div class="workspace-list" id="sidebarWorkspaces">
+        </div>
+
+        <div class="nav-section-label" style="margin-top: 20px;">🏷️ Smart Tags (Frequenti)</div>
+        <div class="workspace-list" id="sidebarSmartTags">
+          <div id="noTagsPlaceholder"
+            style="padding: 10px 12px; font-size: 12px; color: var(--text-3); font-style: italic;">
+            Nessun tag creato o in utilizzo...
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer" id="profileBtn" title="Vai al tuo Profilo">
+        <div style="position: relative;">
+          <div class="avatar" id="userInitials">US</div>
+          <div id="sidebarLevelBadge"
+            style="position: absolute; bottom: -6px; right: -8px; background: var(--accent); color: var(--text-on-accent, #fff); width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 9px; border: 1.5px solid var(--bg-sidebar); box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+            1</div>
+        </div>
+        <div class="footer-info">
+          <div class="footer-name" id="userNameDisplay">Caricamento...</div>
+          <div class="footer-role" id="userSidebarTitle">Novizio della Tastiera</div>
+          <div class="footer-role">Vedi Profilo ➔</div>
+          <div
+            style="width: 100%; height: 4px; background: var(--bg-page); border-radius: 2px; margin-top: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+            <div id="sidebarXPBar" style="width: 0%; height: 100%; background: var(--accent); transition: width 0.3s;">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </aside>
+
+    <div id="main">
+      <div id="topbar">
+        <div class="topbar-title-wrap">
+          <div class="topbar-title" id="topbar-title">Dashboard</div>
+          <div class="topbar-subtitle" id="current-date-display"></div>
+        </div>
+      </div>
+
+      <div id="content">
+
+        <div class="page active" id="page-dashboard">
+          <div class="page-header">
+            <h1>Benvenuto in Zenith</h1>
+            <p>Crea subito un nuovo appunto dal pannello sottostante.</p>
+          </div>
+
+          <div class="table-wrap" style="width: 100%;">
+            <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h2>Aggiungi una nuova nota</h2>
+              <select id="noteTemplate" class="input-field" style="width: auto; margin: 0; padding: 6px;">
+                <option value="">Nessun Template</option>
+                <option value="riunione">📋 Template: Riunione</option>
+                <option value="spesa">🛒 Template: Spesa / To-Do</option>
+              </select>
+            </div>
+            <div class="form-container">
+
+              <div class="form-row" style="margin-bottom: 12px;">
+                <input type="text" id="noteTitle" class="input-field" placeholder="Titolo della nota..."
+                  style="flex: 2; margin: 0;">
+
+                <div
+                  style="display: flex; align-items: center; gap: 10px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 6px; padding: 0 10px;">
+                  <label for="noteColor" style="font-size: 13px; color: var(--text-2); white-space: nowrap;">🎨 Colore
+                    Sfondo:</label>
+                  <input type="color" id="noteColor" value="#000000" title="Nero = Nessuno (Usa Default)"
+                    style="border: none; background: transparent; height: 38px; width: 35px; cursor: pointer; padding: 0;">
+                </div>
+
+                <input type="password" id="notePin" class="input-field" placeholder="PIN Segreto (5 cifre)"
+                  maxlength="5" style="flex: 1; margin: 0;" title="Opzionale: Proteggi con PIN">
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <label style="font-size: 13px; color: var(--text-2); font-weight: bold;">Dettagli Nota</label>
+                <button id="markdownHelpBtn" class="icon-btn-small" style="border-radius: 4px;"
+                  title="Guida Markdown">Sintassi Markdown (?)</button>
+              </div>
+              <div style="position: relative; width: 100%; display: flex; flex-direction: column;">
+                <textarea id="noteDesc" placeholder="Scrivi una nuova nota..."
+                  style="flex: 1; width: 100%; background: var(--bg-card2); color: var(--text-1); border: 1px solid var(--border); border-radius: 8px; padding: 12px 35px 12px 12px; resize: none; outline: none; margin: 0; font-family: inherit; min-height: 120px;"></textarea>
+
+                <button id="zenCreateBtn" type="button" title="Zen Mode"
+                  style="position: absolute; bottom: 10px; right: 10px; background: none; border: none; cursor: pointer; font-size: 20px; z-index: 10; color: var(--text-1); opacity: 0.5; transition: 0.2s;">⭐</button>
+              </div>
+              <div id="noteDescPreview" class="input-field hidden"
+                style="background: var(--bg-hover); min-height: 40px; font-size: 13px; margin-bottom: 12px; border: 1px dashed var(--accent);">
+              </div>
+
+              <div class="form-row" style="align-items: flex-start;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                  <label for="noteDate" style="font-size: 12px; color: var(--text-2); font-weight: bold;">📅 Scadenza
+                    (Data)</label>
+                  <input type="date" id="noteDate" class="input-field" style="margin:0;">
+                </div>
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                  <label for="noteTime" style="font-size: 12px; color: var(--text-2); font-weight: bold;">⏰ Scadenza
+                    (Ora)</label>
+                  <input type="time" id="noteTime" class="input-field" style="margin:0;">
+                </div>
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                  <label for="noteWorkspace" style="font-size: 12px; color: var(--text-2); font-weight: bold;">📁
+                    Cartella (Workspace)</label>
+                  <select id="noteWorkspace" class="input-field" style="margin:0;"></select>
+                </div>
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                  <label for="notePriority" style="font-size: 12px; color: var(--text-2); font-weight: bold;">🚨
+                    Priorità</label>
+                  <select id="notePriority" class="input-field" style="margin:0;">
+                    <option value="bassa">Bassa 🟢</option>
+                    <option value="media">Media 🟡</option>
+                    <option value="alta">Alta 🔴</option>
+                  </select>
+                </div>
+              </div>
+
+              <div
+                style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; margin-bottom: 15px; border-top: 1px solid var(--border); padding-top: 20px;">
+                <label for="noteTags" style="font-size: 12px; color: var(--text-2); font-weight: bold;">🏷️ Etichette
+                  (Tag)</label>
+                <input type="text" id="noteTags" class="input-field"
+                  placeholder="Tag separati da virgola (es: spesa, urgente)" style="margin: 0;">
+
+                <label for="noteImage" class="btn btn-full"
+                  style="background: var(--bg-hover); color: var(--text-1); padding: 16px; font-size: 15px; border: 1px dashed var(--accent); cursor: pointer; display: flex; justify-content: center; margin-top: 10px;">
+                  📸 Clicca qui per aggiungere Immagini
+                </label>
+                <input type="file" id="noteImage" class="hidden" accept="image/*" multiple
+                  title="Seleziona una o più immagini">
+                <div id="creationImgPreview" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+              </div>
+
+              <button id="addNoteBtn" class="btn" style="width: 100%; padding: 14px; font-size: 16px;">➕ Crea
+                Nota</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="page-mie-note">
+          <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+              <h1 id="notesPageTitle">Tutte le Note</h1>
+              <p>Cerca e filtra i tuoi appunti.</p>
+            </div>
+          </div>
+
+          <div class="table-actions form-row"
+            style="margin-bottom: 20px; align-items: flex-end; gap: 15px; display: flex; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <label style="font-size: 0.85em; color: var(--text-2); font-weight: bold;">🖥️ Vista</label>
+              <div class="view-switcher" style="display: flex; align-items: center; gap: 10px;">
+                <label for="viewModeSelect"
+                  style="font-size: 13px; color: var(--text-2); font-weight: bold;">Vista:</label>
+                <select id="viewModeSelect"
+                  style="padding: 8px 12px; border-radius: 8px; background: var(--bg-card); color: var(--text-1); border: 1px solid var(--border); cursor: pointer; font-family: inherit; font-size: 14px; outline: none;">
+                  <option value="grid">🃏 Griglia (Card)</option>
+                  <option value="table">📄 Tabella (Lista)</option>
+                  <option value="kanban">📋 Kanban (Priorità)</option>
+                </select>
+              </div>
+            </div>
+            <div style="flex: 2; display: flex; flex-direction: column; gap: 5px; min-width: 200px;">
+              <label style="font-size: 0.85em; color: var(--text-2); font-weight: bold;">🔍 Cerca</label>
+              <input type="text" id="searchInput" class="search-input input-field" placeholder="Testo o tag..."
+                style="margin: 0; width: 100%; min-height: 42px;">
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 150px;">
+              <label style="font-size: 0.85em; color: var(--text-2); font-weight: bold;">📑 Filtra</label>
+              <select id="smartFilterSelect" class="input-field" style="width: auto; margin-bottom: 0;">
+                <option value="all">Tutte le Note</option>
+                <option value="high_prio">🔥 Alta Priorità</option>
+                <option value="mid_prio">⚡ Media Priorità</option>
+                <option value="low_prio">☕ Bassa Priorità</option>
+                <option value="urgent">⏳ In Scadenza (24h)</option>
+              </select>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 150px;">
+              <label style="font-size: 0.85em; color: var(--text-2); font-weight: bold;">↕️ Ordina</label>
+              <select id="sortSelect" class="input-field" style="margin: 0; width: 100%; min-height: 42px;">
+                <option value="newest">Più recenti</option>
+                <option value="oldest">Meno recenti</option>
+                <option value="expiring">Scadenza</option>
+              </select>
+            </div>
+          </div>
+          <div id="subfolders-explorer"></div>
+
+          <h3 class="section-title pinned-title hidden">📌 In Evidenza</h3>
+          <div class="notes-grid" id="pinnedNotesList" style="margin-bottom: 30px;"></div>
+          <h3 class="section-title">📋 Note</h3>
+          <div class="notes-grid" id="notesList"></div>
+        </div>
+
+        <div class="page" id="page-mappa">
+          <div class="page-header">
+            <h1>Mappa Relazionale</h1>
+            <p>Naviga visivamente tra i tuoi workspace e le tue note.</p>
+          </div>
+          <div id="graph-container"
+            style="width: 100%; height: 70vh; background: var(--bg-sidebar); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; position: relative;">
+
+            <div class="graph-legend" id="graph-legend">
+              <h4>Legenda Nodi e Archi</h4>
+              <div class="legend-item"><span class="leg-icon" style="color: var(--accent);">⭐</span> Zenith (Radice)
+              </div>
+              <div class="legend-item"><span class="leg-icon" style="color: var(--accent);">⬟</span> Cartella Principale
+              </div>
+              <div class="legend-item"><span class="leg-icon" style="color: var(--accent);">■</span> Sottocartella</div>
+              <div class="legend-item"><span class="leg-icon" style="color: var(--badge-err-t);">●</span> Nota (Alta
+                Priorità)</div>
+              <div class="legend-item"><span class="leg-icon" style="color: var(--badge-warn-t);">●</span> Nota (Media
+                Priorità)</div>
+              <div class="legend-item"><span class="leg-icon" style="color: var(--badge-ok-t);">●</span> Nota (Bassa
+                Priorità)</div>
+
+              <div style="height: 1px; background: rgba(255,255,255,0.2); margin: 10px 0;"></div>
+
+              <div class="legend-item">
+                <div
+                  style="width: 25px; height: 2px; background: rgba(255,255,255,0.4); position: relative; margin-right: 8px;">
+                  <span style="position:absolute; right:-2px; top:-7px; font-size:10px; color: #a0a0a8;">▶</span>
+                </div>
+                Struttura (Padre ➔ Figlio)
+              </div>
+              <div class="legend-item">
+                <div
+                  style="width: 25px; height: 0px; border-top: 2px dashed #6c7af0; position: relative; margin-right: 8px;">
+                  <span style="position:absolute; right:-2px; top:-8px; font-size:10px; color: #6c7af0;">▶</span>
+                </div>
+                Link Direzionale [[Nota]]
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="page" id="page-calendario">
+          <div class="page-header">
+            <h1>Calendario Scadenze</h1>
+            <p>Visualizza a colpo d'occhio le note in scadenza questo mese.</p>
+          </div>
+
+          <div class="calendar-header">
+            <button id="prevMonthBtn" class="calendar-nav-btn">◀ Precedente</button>
+            <h2 id="calendarMonthDisplay" style="margin:0; color: var(--text-1);">Mese Anno</h2>
+            <button id="nextMonthBtn" class="calendar-nav-btn">Successivo ▶</button>
+          </div>
+
+          <div class="calendar-grid" style="margin-bottom: 10px;">
+            <div class="calendar-day-header">Lun</div>
+            <div class="calendar-day-header">Mar</div>
+            <div class="calendar-day-header">Mer</div>
+            <div class="calendar-day-header">Gio</div>
+            <div class="calendar-day-header">Ven</div>
+            <div class="calendar-day-header">Sab</div>
+            <div class="calendar-day-header">Dom</div>
+          </div>
+
+          <div class="calendar-grid" id="calendarDaysGrid"></div>
+        </div>
+
+        <div class="page" id="page-cestino">
+          <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h1>Cestino</h1>
+              <p>Le note verranno eliminate dopo 7 giorni.</p>
+            </div>
+            <button id="emptyTrashBtn" class="btn btn-danger">🔥 Svuota Cestino</button>
+          </div>
+          <div class="notes-grid" id="trashList"></div>
+        </div>
+
+        <div class="page" id="page-profilo">
+          <div class="page-header"
+            style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
+            <div>
+              <h1>Il Mio Profilo</h1>
+              <p>Gestisci il tuo account e analizza la tua produttività.</p>
+            </div>
+
+            <div class="profile-nav-container">
+              <button id="tabStatsBtn" class="profile-tab active">📊 Analisi Dati</button>
+              <button class="profile-tab" id="tabGoalsBtn">🏆 Obiettivi</button>
+              <button id="tabAccountBtn" class="profile-tab">⚙️ Impostazioni Account</button>
+            </div>
+          </div>
+
+          <div id="profile-tab-stats" class="profile-tab-panel">
+            <div class="stat-grid" style="margin-bottom: 20px;">
+              <div class="stat-card" style="border-color: var(--accent);">
+                <div class="stat-label">Totale Note Attive</div>
+                <div class="stat-value" id="stat-totale">0</div>
+              </div>
+              <div class="stat-card" style="border-color: var(--badge-err-t);">
+                <div class="stat-label">Note in Scadenza (&lt;24h)</div>
+                <div class="stat-value" id="stat-scadenza" style="color:var(--badge-err-t)">0</div>
+              </div>
+              <div class="stat-card" style="border-color: var(--text-3);">
+                <div class="stat-label">Note nel Cestino</div>
+                <div class="stat-value" id="stat-cestino" style="color:var(--text-3)">0</div>
+              </div>
+            </div>
+
+            <div class="stat-label" style="margin-top: 10px; margin-bottom: 15px; font-size: 16px;">📊 Analisi Dati
+              (In Tempo Reale)</div>
+            <div class="stat-grid"
+              style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 30px;">
+              <div class="stat-card"
+                style="display: flex; flex-direction: column; align-items: center; height: 330px; position: relative;">
+                <div style="font-size: 13px; color: var(--text-2); margin-bottom: 10px; font-weight: bold;">
+                  Distribuzione Priorità</div>
+                <div id="prioChartPlaceholder" class="hidden"
+                  style="position: absolute; top: 50%; text-align: center; color: var(--text-3); font-size: 13px; width: 80%;">
+                  📝 Non ci sono note attive... <br> Crea la tua prima nota per vedere i dati!
+                </div>
+                <div id="prioChartContainer" style="flex: 1; width: 100%; position: relative;"><canvas
+                    id="priorityChart"></canvas></div>
+              </div>
+
+              <div class="stat-card"
+                style="display: flex; flex-direction: column; align-items: center; height: 330px; position: relative;">
+                <div style="font-size: 13px; color: var(--text-2); margin-bottom: 10px; font-weight: bold;">Note per
+                  Cartella</div>
+                <div id="wsChartPlaceholder" class="hidden"
+                  style="position: absolute; top: 50%; text-align: center; color: var(--text-3); font-size: 13px; width: 80%;">
+                  📁 Nessun workspace personalizzato... <br> Crea un workspace nella sidebar per analizzarlo!
+                </div>
+                <div id="wsChartContainer" style="flex: 1; width: 100%; position: relative;"><canvas
+                    id="workspaceChart"></canvas></div>
+                <button id="btnShowAllWs" class="btn hidden"
+                  style="margin-top:10px; font-size:11px; padding: 5px 10px; width: 100%;">🔍 Vedi tutti i
+                  Workspace</button>
+              </div>
+
+              <div class="stat-card"
+                style="display: flex; flex-direction: column; align-items: center; height: 330px; position: relative;">
+                <div style="font-size: 13px; color: var(--text-2); margin-bottom: 10px; font-weight: bold;">Analisi
+                  Tag</div>
+                <div id="tagChartPlaceholder" class="hidden"
+                  style="position: absolute; top: 50%; text-align: center; color: var(--text-3); font-size: 13px; width: 80%;">
+                  🔍 Sembra che non ci siano tag... <br> Aggiungine alcuni per vederli qui!
+                </div>
+                <div id="tagChartContainer" style="flex: 1; width: 100%; position: relative;"><canvas
+                    id="tagChart"></canvas></div>
+                <button id="btnShowAllTags" class="btn hidden"
+                  style="margin-top:10px; font-size:11px; padding: 5px 10px; width: 100%;">🔍 Vedi tutti i
+                  Tag</button>
+              </div>
+            </div>
+          </div>
+          <div id="profile-tab-goals" class="profile-tab-panel hidden">
+            <div class="gamification-hero"
+              style="display: flex; gap: 25px; align-items: center; background: var(--bg-card2); padding: 25px; border-radius: 15px; border: 1px solid var(--border);">
+              <div class="avatar-container" style="position: relative;">
+                <div class="avatar" id="profAvatarLarge"
+                  style="width: 90px; height: 90px; font-size: 32px; border: 3px solid var(--accent);">??</div>
+                <div id="userLevelBadge"
+                  style="position: absolute; bottom: -5px; right: -5px; background: var(--accent); color: var(--text-on-accent, #fff); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border: 2px solid var(--bg-card2); box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                  1</div>
+              </div>
+              <div style="flex: 1;">
+                <h2 id="profFullnameLarge" style="margin: 0; color: var(--text-1);">Nome Cognome</h2>
+                <div id="userEquippedTitle"
+                  style="color: var(--accent); font-style: italic; font-size: 14px; margin-bottom: 12px;">Novizio della
+                  Tastiera</div>
+                <div class="xp-wrapper">
+                  <div
+                    style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px; color: var(--text-2); font-weight: bold;">
+                    <span>ESPERIENZA</span>
+                    <span id="xpValueDisplay">0 / 100 XP</span>
+                  </div>
+                  <div class="xp-bar-bg"
+                    style="width: 100%; height: 10px; background: var(--bg-page); border-radius: 5px; overflow: hidden; border: 1px solid var(--border);">
+                    <div id="xpBarFill"
+                      style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent), #a29bfe); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">
+              <h3 style="margin: 0; color: var(--text-1); font-size: 16px;">🏅 Bacheca Medaglie</h3>
+              <button id="gamificationHelpBtn" class="icon-btn-small"
+                style="border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;"
+                title="Come guadagnare XP?">?</button>
+            </div>
+            <div id="badgeGrid"
+              style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 15px;">
+            </div>
+          </div>
+
+          <div id="profile-tab-account" class="profile-tab-panel hidden">
+            <div class="settings-grid">
+              <div class="stat-card">
+                <div class="stat-label">Dati Personali</div>
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                  <div
+                    style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                    <span style="color: var(--text-2);">Nome:</span><strong id="dispProfNome">---</strong>
+                  </div>
+                  <div
+                    style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                    <span style="color: var(--text-2);">Cognome:</span><strong id="dispProfCognome">---</strong>
+                  </div>
+                  <div
+                    style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                    <span style="color: var(--text-2);">Email:</span><strong id="dispProfEmail">---</strong>
+                  </div>
+                  <div
+                    style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                    <span style="color: var(--text-2);">Piano Attivo:</span><strong id="dispProfPlan"
+                      style="color: var(--accent);">---</strong>
+                  </div>
+                  <div
+                    style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                    <span style="color: var(--text-2);">Password:</span><strong id="dispProfPassword"
+                      style="letter-spacing: 2px;">••••••••</strong>
+                  </div>
+                  <button id="openProfileEditBtn" class="btn" style="margin-top: 10px;">✏️ Cambia Dati</button>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-label">I Tuoi Backup</div>
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                  <div class="form-row" style="margin-top: 10px;">
+                    <button id="exportAllBtn" class="btn btn-full" style="background: var(--badge-ok-t);">💾 Esporta
+                      File JSON</button>
+                    <label for="importBackupFile" class="btn btn-full"
+                      style="background: var(--accent); text-align:center; cursor:pointer; margin:0;">📂 Importa
+                      Backup</label>
+                    <input type="file" id="importBackupFile" class="hidden" accept=".json">
+                  </div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-label">Sicurezza e Dati</div>
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                  <p style="font-size: 13px; color: var(--text-2); margin-bottom: 5px;">Disconnetti il tuo account o
+                    formatta tutti i dati.</p>
+                  <button id="settingsLogoutBtn" class="btn btn-full"
+                    style="background: var(--bg-hover); color: var(--text-1);">🚪 Esci dall'account</button>
+                  <button id="settingsResetBtn" class="btn btn-full btn-danger">⚠️ Cancella tutti i dati</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="page-settings">
+          <div class="page-header">
+            <h1>Impostazioni App</h1>
+            <p>Personalizza Zenith in base alle tue esigenze.</p>
+          </div>
+
+          <div class="settings-wrapper">
+            <aside class="settings-nav">
+              <button class="settings-nav-item active" data-tab="tab-aspetto">🎨 Aspetto</button>
+              <button class="settings-nav-item" data-tab="tab-tags">🏷️ Etichette</button>
+              <button class="settings-nav-item premium-locked" data-tab="tab-editor">
+                <span class="nav-icon">✍️</span> Editor & Note
+                <span class="premium-crown">👑</span>
+              </button>
+              <button class="settings-nav-item premium-locked" data-tab="tab-layout">
+                <span class="nav-icon">📐</span> Layout
+                <span class="premium-crown">👑</span>
+              </button>
+              <button class="settings-nav-item" data-tab="tab-export">💾 Esportazione</button>
+            </aside>
+
+            <main class="settings-content">
+
+              <section id="tab-aspetto" class="settings-tab-panel active">
+                <div class="stat-card">
+                  <div class="stat-label">Temi dell'Applicazione</div>
+                  <div class="theme-grid-selector" id="themeGrid">
+                    <div class="theme-option" data-theme="dark" data-label="Tema Scuro"><span
+                        class="theme-dot dark"></span> Scuro</div>
+                    <div class="theme-option" data-theme="light" data-label="Tema Chiaro"><span
+                        class="theme-dot light"></span> Chiaro</div>
+                    <div class="theme-option" data-theme="gradient" data-label="Gradient"><span
+                        class="theme-dot gradient"></span> Gradient</div>
+                    <div class="theme-option" data-theme="cyberpunk" data-label="Cyberpunk"><span
+                        class="theme-dot cyberpunk"></span> Cyberpunk <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="forest" data-label="Forest"><span
+                        class="theme-dot forest"></span> Forest Natura <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="midnight" data-label="Midnight"><span
+                        class="theme-dot midnight"></span> Midnight Oceano <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="sunset" data-label="Tramonto"><span
+                        class="theme-dot sunset"></span> Tramonto <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="dracula" data-label="Dracula"><span
+                        class="theme-dot dracula"></span> Dracula <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="lavender" data-label="Lavanda"><span
+                        class="theme-dot lavender"></span> Lavanda <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="ocean" data-label="Oceano Profondo"><span
+                        class="theme-dot ocean"></span> Oceano <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="solarized" data-label="Solarized"><span
+                        class="theme-dot solarized"></span> Solarized <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="coffee" data-label="Coffee"><span
+                        class="theme-dot coffee"></span> Coffee <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="mint" data-label="Neon Mint"><span
+                        class="theme-dot mint"></span> Neon Mint <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="cherry" data-label="Cherry Blossom"><span
+                        class="theme-dot cherry"></span> Cherry <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="matrix" data-label="Hacker Matrix"><span
+                        class="theme-dot matrix"></span> Matrix <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="nordic" data-label="Nordic Blue"><span
+                        class="theme-dot nordic"></span> Nordic <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="rosegold" data-label="Rose Gold"><span
+                        class="theme-dot rosegold"></span> Rose Gold <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="toxic" data-label="Toxic Neon"><span
+                        class="theme-dot toxic"></span> Toxic <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="sepia" data-label="Carta Antica"><span
+                        class="theme-dot sepia"></span> Sepia <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="synthwave" data-label="Synthwave 80s"><span
+                        class="theme-dot synthwave"></span> Synthwave <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="obsidian" data-label="Deep Obsidian"><span
+                        class="theme-dot obsidian"></span> Obsidian <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="sahara" data-label="Deserto Sahara"><span
+                        class="theme-dot sahara"></span> Sahara <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="amethyst" data-label="Gemma Viola"><span
+                        class="theme-dot amethyst"></span> Amethyst <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="atlantis" data-label="Abissi Marini"><span
+                        class="theme-dot atlantis"></span> Atlantis <span class="premium-crown">👑</span></div>
+                    <div class="theme-option" data-theme="acid-green" data-label="Verde Acido">
+                      <span class="theme-dot acid-green"></span> Acid Green <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="royal-blue" data-label="Blu Reale">
+                      <span class="theme-dot royal-blue"></span> Royal Blue <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="ruby-red" data-label="Rosso Rubino">
+                      <span class="theme-dot ruby-red"></span> Ruby Red <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="slate-gray" data-label="Grigio Ardesia">
+                      <span class="theme-dot slate-gray"></span> Slate Gray <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="sunset-gold" data-label="Oro Tramonto">
+                      <span class="theme-dot sunset-gold"></span> Sunset Gold <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="mint-fresh" data-label="Menta Fresca">
+                      <span class="theme-dot mint-fresh"></span> Mint Fresh <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="electric-purple" data-label="Viola Elettrico">
+                      <span class="theme-dot electric-purple"></span> Electric Purple <span
+                        class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="coffee-shop" data-label="Coffee Shop">
+                      <span class="theme-dot coffee-shop"></span> Coffee Shop <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="ocean-deep" data-label="Oceano Profondo">
+                      <span class="theme-dot ocean-deep"></span> Ocean Deep <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="desert-sand" data-label="Sabbia del Deserto">
+                      <span class="theme-dot desert-sand"></span> Desert Sand <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="sakura" data-label="Fiori di Ciliegio">
+                      <span class="theme-dot sakura"></span> Sakura <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="iceberg" data-label="Ghiaccio Artico">
+                      <span class="theme-dot iceberg"></span> Iceberg <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="volcano" data-label="Vulcano Attivo">
+                      <span class="theme-dot volcano"></span> Volcano <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="emerald" data-label="Smeraldo">
+                      <span class="theme-dot emerald"></span> Emerald <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="copper" data-label="Rame Antico">
+                      <span class="theme-dot copper"></span> Copper <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="starlight" data-label="Luce Stellare">
+                      <span class="theme-dot starlight"></span> Starlight <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="lava" data-label="Lava Fluida">
+                      <span class="theme-dot lava"></span> Lava <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="moss" data-label="Muschio di Bosco">
+                      <span class="theme-dot moss"></span> Forest Moss <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="peach" data-label="Peach Fuzz">
+                      <span class="theme-dot peach"></span> Peach Fuzz <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="moonlight" data-label="Chiaro di Luna">
+                      <span class="theme-dot moonlight"></span> Moonlight <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="toscana" data-label="Toscana">
+                      <span class="theme-dot toscana"></span> Toscana <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="blueprint" data-label="Blueprint">
+                      <span class="theme-dot blueprint"></span> Blueprint <span class="premium-crown">👑</span>
+                    </div>
+                    <div class="theme-option" data-theme="cybergold" data-label="Cyber Gold">
+                      <span class="theme-dot cybergold"></span> Cyber Gold <span class="premium-crown">👑</span>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="stat-card" style="margin-top: 20px;">
+                  <div class="stat-label">Caratteri e Testo</div>
+                  <ul class="setting-list">
+                    <li>
+                      <label for="set-font-size">Grandezza Testo: <strong id="val-font-size">14</strong>px</label>
+                      <input type="range" id="set-font-size" min="12" max="22" step="1" value="14">
+                    </li>
+                    <li>
+                      <label for="set-font-family">Font dell'Applicazione</label>
+                      <select id="set-font-family" class="input-field" style="margin-bottom: 0;">
+                        <option value="system-ui, sans-serif">Standard Moderno</option>
+                        <option value="'Courier New', monospace">Codice Retro</option>
+                        <option value="'Georgia', serif">Serif Classico</option>
+                        <option value="'Trebuchet MS', sans-serif">Trebuchet Soffice</option>
+                      </select>
+                    </li>
+                  </ul>
+                  <div id="preview-text" class="preview-box">Anteprima del testo: ecco come appariranno i tuoi appunti.
+                  </div>
+                </div>
+              </section>
+
+              <section id="tab-editor" class="settings-tab-panel">
+                <div class="stat-card">
+                  <div class="stat-label">Comportamento Editor & Sicurezza</div>
+                  <ul class="setting-list">
+                    <!--<li>
+                      <label for="set-fast-delete">Eliminazione Rapida Markdown<br><small
+                          style="color:var(--text-3);">Backspace elimina interi blocchi di codice</small></label>
+                      <input type="checkbox" id="set-fast-delete">
+                    </li>-->
+                    <li>
+                      <label for="set-auto-save">Salvataggio Automatico <span
+                          style="color: var(--badge-warn); font-size: 10px;">BETA</span><br><small
+                          style="color:var(--text-3);">Salva mentre scrivi nella modale</small></label>
+                      <input type="checkbox" id="set-auto-save">
+                    </li>
+                    <li>
+                      <label for="set-auto-destroy">Autodistruzione Note Protette<br><small
+                          style="color:var(--text-3);">Le note eliminate spariscono all'istante</small></label>
+                      <input type="checkbox" id="set-auto-destroy">
+                    </li>
+                    <!--<li>
+                      <label for="set-autocomplete">
+                        Autocompletamento Link <code>[[...]]</code>
+                        <span
+                          style="color: var(--accent); font-size: 10px; margin-left: 5px; font-weight: bold;">NEW</span>
+                        <br>
+                        <small style="color:var(--text-3);">Suggerisce i titoli delle tue note mentre scrivi per
+                          collegarle</small>
+                      </label>
+                      <input type="checkbox" id="set-autocomplete" checked>
+                    </li>-->
+                  </ul>
+                </div>
+              </section>
+
+              <section id="tab-tags" class="settings-tab-panel">
+                <div class="stat-card">
+                  <div class="stat-label">Stile Visivo Globale</div>
+                  <p style="font-size: 13px; color: var(--text-2); margin-bottom: 15px;">Scegli come visualizzare i tag
+                    sulle tue note.</p>
+                  <div style="display: flex; gap: 10px;">
+                    <button class="btn tag-style-btn" data-style="solid"
+                      style="background: var(--bg-card2); color: var(--text-1);">Pieno</button>
+                    <button class="btn tag-style-btn" data-style="ghost"
+                      style="background: var(--bg-card2); color: var(--text-1);">Fantasma</button>
+                    <button class="btn tag-style-btn active" data-style="dot"
+                      style="background: var(--accent); color: #fff;">Pallino</button>
+                  </div>
+                </div>
+
+                <div class="stat-card" style="margin-top: 20px;">
+                  <div class="stat-label">Dizionario Colori & Creazione</div>
+                  <p style="font-size: 13px; color: var(--text-2); margin-bottom: 15px;">Crea nuovi tag o modifica i
+                    colori di quelli esistenti. Si applicheranno ovunque.</p>
+
+                  <div class="form-row"
+                    style="margin-bottom: 20px; background: var(--bg-hover); padding: 10px; border-radius: 8px; border: 1px dashed var(--border);">
+                    <input type="text" id="newTagName" class="input-field" placeholder="Nome tag (es: progetto)"
+                      style="margin: 0; flex: 1;">
+                    <input type="color" id="newTagColor" value="#00e676"
+                      style="height: 38px; width: 38px; border: none; background: transparent; cursor: pointer; padding: 0;"
+                      title="Scegli il colore">
+                    <button id="addNewTagBtn" class="btn" style="background: var(--accent);">➕ Crea</button>
+                  </div>
+
+                  <div id="tagDictionaryList" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div style="text-align: center; color: var(--text-3); font-size: 13px; padding: 20px;">Caricamento
+                      tag in corso...</div>
+                  </div>
+                </div>
+              </section>
+              <section id="tab-layout" class="settings-tab-panel">
+                <div class="sub-nav-header">
+                  <button class="sub-nav-item active" data-sub="sub-griglia">🃏 Griglia Card</button>
+                  <button class="sub-nav-item" data-sub="sub-tabella">📄 Tabella Lista</button>
+                </div>
+
+                <div id="sub-griglia" class="sub-panel active">
+                  <ul class="setting-list">
+                    <li>
+                      <label for="set-card-width">Larghezza Card: <strong id="val-card-width">280</strong>px</label>
+                      <input type="range" id="set-card-width" min="200" max="600" step="20">
+                    </li>
+                    <li>
+                      <label for="set-card-height">Altezza Card: <strong id="val-card-height">320</strong>px</label>
+                      <input type="range" id="set-card-height" min="200" max="800" step="20">
+                    </li>
+                  </ul>
+                  <div id="preview-card" class="note-card priority-bassa"
+                    style="margin: 20px auto; pointer-events: none;">
+                    <div class="note-img" style="background: var(--accent); height: 35%; min-height: 80px;"></div>
+                    <div class="note-content">
+                      <div class="note-title">Anteprima Card</div>
+                      <div class="note-desc">Verifica dal vivo le proporzioni della card.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="sub-tabella" class="sub-panel">
+                  <ul class="setting-list">
+                    <li>
+                      <label for="set-table-width">Larghezza Tabella: <strong id="val-table-width">100</strong>%</label>
+                      <input type="range" id="set-table-width" min="50" max="100" step="5">
+                    </li>
+                    <li>
+                      <label for="set-table-pad-v">Spazio Verticale: <strong id="val-table-pad-v">12</strong>px</label>
+                      <input type="range" id="set-table-pad-v" min="5" max="40" step="1">
+                    </li>
+                    <li>
+                      <label for="set-table-pad-h">Spazio Orizzontale: <strong
+                          id="val-table-pad-h">15</strong>px</label>
+                      <input type="range" id="set-table-pad-h" min="5" max="40" step="1">
+                    </li>
+                  </ul>
+                  <div class="preview-box" style="overflow-x: auto;">
+                    <table class="notes-table" id="preview-table" style="width: 100%;">
+                      <thead>
+                        <tr>
+                          <th>Pin</th>
+                          <th>Titolo</th>
+                          <th>Priorità</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>📍</td>
+                          <td>Spesa per domani</td>
+                          <td>Media</td>
+                        </tr>
+                        <tr>
+                          <td>📌</td>
+                          <td>Password Server</td>
+                          <td>Alta</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </section>
+
+              <section id="tab-export" class="settings-tab-panel">
+                <div class="stat-card">
+                  <div class="stat-label">Preferenze di Esportazione PDF</div>
+                  <p style="font-size: 13px; color: var(--text-2); margin-bottom: 15px;">Personalizza l'aspetto dei tuoi
+                    documenti stampati.</p>
+
+                  <ul class="setting-list">
+                    <li>
+                      <label for="exportIncludeDate">Stampa data e ora<br><small style="color:var(--text-3);">Mostra in
+                          cima al PDF la data di creazione</small></label>
+                      <input type="checkbox" id="exportIncludeDate" checked>
+                    </li>
+                    <li>
+                      <label for="exportIncludeTags">Includi etichette<br><small style="color:var(--text-3);">Stampa i
+                          tag associati alla nota</small></label>
+                      <input type="checkbox" id="exportIncludeTags" checked>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="stat-card" style="margin-top: 20px;">
+                  <div class="stat-label">Esportazione Dati (JSON)</div>
+                  <p style="font-size: 13px; color: var(--text-2); margin-bottom: 15px;">Nota: I bottoni per il Backup
+                    totale dell'account si trovano nel tuo Profilo Utente (Scheda: Impostazioni Account).</p>
+                </div>
+              </section>
+
+            </main>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div id="dragOverlay" class="drag-overlay">
+    <div class="drag-zone-container">
+      <div id="dropZoneTrash" class="drop-zone trash-zone hidden">
+        <span class="zone-icon">🗑️</span>
+        <span class="zone-text">Sposta nel Cestino</span>
+      </div>
+      <div id="dropZoneRestore" class="drop-zone restore-zone hidden">
+        <span class="zone-icon">♻️</span>
+        <span class="zone-text">Ripristina Nota</span>
+      </div>
+      <div id="dropZoneGeneral" class="drop-zone general-zone hidden">
+        <span class="zone-icon">📑</span>
+        <span class="zone-text">Rimuovi dal Workspace</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="calTooltip" class="cal-tooltip"></div>
+
+  <div id="dayNotesModal" class="modal-overlay hidden" style="z-index: 2900;">
+    <div class="auth-card" style="max-width: 400px; text-align: left; position: relative;">
+      <button id="closeDayNotesBtn" class="modal-close" style="top: 15px; right: 15px; z-index: 10;">&times;</button>
+      <h2 id="dayNotesTitle" style="color: var(--text-1); margin-bottom: 15px; padding-right: 20px;">Scadenze del...
+      </h2>
+      <div id="dayNotesList"
+        style="display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 5px;">
+      </div>
+    </div>
+  </div>
+
+  <div id="alertModal" class="modal-overlay hidden" style="z-index: 3000;">
+    <div class="auth-card" style="max-width: 450px;">
+      <h2 style="color: var(--badge-err-t); margin-bottom: 15px;">⚠️ Promemoria Scadenze</h2>
+      <p style="color: var(--text-2); margin-bottom: 20px;">Le seguenti note scadranno nelle prossime 24 ore:</p>
+      <div id="alertList"
+        style="text-align: left; max-height: 150px; overflow-y: auto; margin-bottom: 20px; font-size: 14px;"></div>
+      <button id="alertConfirmBtn" class="btn btn-full">Ho capito</button>
+    </div>
+  </div>
+
+  <div id="pinPromptModal" class="modal-overlay hidden" style="z-index: 2800;">
+    <div class="auth-card" style="max-width: 350px; text-align: center;">
+      <h2 style="color: var(--text-1); margin-bottom: 10px;">🔒 Nota Protetta</h2>
+      <p style="color: var(--text-2); font-size: 13px; margin-bottom: 20px;">Inserisci il PIN a 5 cifre per
+        visualizzare.</p>
+      <input type="password" id="checkPinInput" class="input-field" placeholder="•••••" maxlength="5" pattern="\d{5}"
+        style="text-align: center; letter-spacing: 5px; font-size: 20px;">
+      <div class="form-row" style="margin-top: 15px;">
+        <button id="cancelPinPromptBtn" class="btn btn-full" style="background: var(--bg-hover);">Annulla</button>
+        <button id="confirmPinPromptBtn" class="btn btn-full" style="background: var(--accent);">Sblocca</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="markdownHelpModal" class="modal-overlay hidden" style="z-index: 3100;">
+    <div class="auth-card" style="max-width: 450px; text-align: left;">
+      <h2 style="margin-bottom: 15px;">Guida Markdown</h2>
+      <ul style="color: var(--text-2); line-height: 1.8; margin-left: 20px; margin-bottom: 20px; font-size: 14px;">
+        <li><code>**testo**</code> per <b>Grassetto</b></li>
+        <li><code>*testo*</code> per <i>Corsivo</i></li>
+        <li><code>[x] testo</code> per generare una Checklist</li>
+        <!--<li><code>```</code> (3 backtick) per un blocco di codice colorato</li>-->
+        <li><code>`codice`</code> (1 backtick) per codice in linea</li>
+        <li><code>[[Titolo Nota]]</code> per link a un'altra nota</li>
+      </ul>
+      <button id="closeMarkdownBtn" class="btn btn-full">Ho capito</button>
+    </div>
+  </div>
+
+  <div id="profileModal" class="modal-overlay hidden" style="z-index: 2500;">
+    <div class="auth-card" style="max-width: 400px; text-align: left;">
+      <h2 style="color: var(--text-1); margin-bottom: 15px;">Modifica Profilo</h2>
+      <label style="font-size: 13px; color: var(--text-2);">Nome</label>
+      <input type="text" id="profNome" class="input-field">
+      <label style="font-size: 13px; color: var(--text-2);">Cognome</label>
+      <input type="text" id="profCognome" class="input-field">
+      <label style="font-size: 13px; color: var(--text-2);">Email</label>
+      <input type="email" id="profEmail" class="input-field">
+      <label style="font-size: 13px; color: var(--text-2);">Nuova Password</label>
+      <input type="password" id="profPassword" class="input-field" placeholder="Nuova password...">
+      <label style="font-size: 13px; color: var(--text-2);">Conferma Password</label>
+      <input type="password" id="profPasswordConfirm" class="input-field" placeholder="Ripeti...">
+      <div class="form-row" style="margin-top: 20px;">
+        <button id="cancelProfileBtn" class="btn btn-full" style="background: var(--bg-hover); color: var(--text-1);">❌
+          Annulla</button>
+        <button id="saveProfileBtn" class="btn btn-full" style="background: var(--badge-ok-t);">✅ Conferma</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="noteModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <button id="closeModalBtn" class="modal-close">&times;</button>
+      <div class="modal-body">
+
+        <div class="modal-left" style="position: relative;">
+          <img id="modalImg" src="" alt="Nota">
+          <div id="modalImgEditControls" class="hidden"
+            style="position: absolute; top: 15px; right: 15px; display:flex; flex-direction:column; gap:8px;">
+            <button id="modalSetCoverBtn" class="icon-btn-small" title="Imposta come Copertina"
+              style="background: var(--bg-card); font-size: 18px;">⭐</button>
+            <button id="modalDelImgBtn" class="icon-btn-small" title="Elimina questa foto"
+              style="background: var(--badge-err); font-size: 18px;">🗑️</button>
+            <label for="modalAddImgInput" class="icon-btn-small" title="Aggiungi Foto"
+              style="cursor:pointer; background: var(--badge-ok); color:white; font-size: 18px; text-align:center;">➕</label>
+            <input type="file" id="modalAddImgInput" multiple accept="image/*" class="hidden">
+          </div>
+          <div id="modalImgControls"
+            style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display:flex; gap:10px; background: rgba(0,0,0,0.6); padding: 5px 15px; border-radius: 20px;">
+            <button id="prevImgBtn" class="icon-btn-small"
+              style="background:transparent; border:none; color:white;">◀</button>
+            <span id="imgCounter" style="color:white; font-size:12px; line-height: 24px;">1/1</span>
+            <button id="nextImgBtn" class="icon-btn-small"
+              style="background:transparent; border:none; color:white;">▶</button>
+          </div>
+        </div>
+
+        <div class="modal-right">
+          <div style="margin-bottom: 15px; padding-right: 35px;">
+
+            <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px;">
+              <input type="text" id="modalTitle" class="input-field" disabled
+                style="font-weight: bold; font-size: 16px; flex: 1; margin: 0;">
+              <button id="exportNoteBtn" class="btn" title="Esporta Nota (PDF/MD)"
+                style="padding: 10px 15px; font-size: 16px; background: var(--bg-hover); color: var(--text-1); border: 1px solid var(--border);">📥</button>
+            </div>
+
+            <div class="form-row">
+              <div
+                style="display: flex; align-items: center; gap: 10px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; flex: 1;">
+                <label style="font-size: 13px; color: var(--text-2); white-space: nowrap;">🎨 Colore:</label>
+                <input type="color" id="modalColor" value="#000000" disabled title="Colore Sfondo"
+                  style="border: none; background: transparent; height: 38px; width: 35px; cursor: pointer; padding: 0;">
+              </div>
+              <input type="password" id="modalPin" class="input-field" placeholder="PIN (5 Cifre)" maxlength="5"
+                disabled style="flex: 1; margin:0;" title="Aggiungi/Rimuovi PIN (Solo 5 Cifre)">
+            </div>
+          </div>
+          <div
+            style="position: relative; flex: 1; display: flex; flex-direction: column; min-height: 250px; width: 100%;">
+
+            <div id="modalRichTextDisplay"
+              style="flex: 1; overflow-y: auto; background: transparent; border: none; margin: 0; padding: 5px; color: var(--text-2); line-height: 1.6;">
+            </div>
+
+            <textarea id="modalDesc" class="hidden" placeholder="Modifica descrizione..."
+              style="flex: 1; width: 100%; background: var(--bg-card2); color: var(--text-1); border: 1px solid var(--border); border-radius: 8px; padding: 12px 35px 12px 12px; resize: none; outline: none; margin: 0; font-family: inherit;"></textarea>
+
+            <button id="zenModalBtn" class="hidden" type="button" title="Zen Mode"
+              style="position: absolute; bottom: 10px; right: 10px; background: none; border: none; cursor: pointer; font-size: 20px; z-index: 10; color: var(--text-1); opacity: 0.5; transition: 0.2s;">⭐</button>
+          </div>
+
+          <div id="modalTagsDisplay" class="note-tags"></div>
+          <input type="text" id="modalTagsInput" class="input-field hidden"
+            placeholder="Modifica tag (separati da virgola)..." style="margin-top: 10px;">
+
+          <div class="form-row" style="align-items: flex-start; margin-top: 15px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+              <label for="modalDateOnly" style="font-size: 12px; color: var(--text-2); font-weight: bold;">📅 Scadenza
+                (Data)</label>
+              <input type="date" id="modalDateOnly" class="input-field" style="margin:0;" disabled>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+              <label for="modalTimeOnly" style="font-size: 12px; color: var(--text-2); font-weight: bold;">⏰ Scadenza
+                (Ora)</label>
+              <input type="time" id="modalTimeOnly" class="input-field" style="margin:0;" disabled>
+            </div>
+          </div>
+
+          <div class="form-row" style="align-items: flex-start;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+              <label for="modalWorkspace" style="font-size: 12px; color: var(--text-2); font-weight: bold;">📁
+                Cartella</label>
+              <select id="modalWorkspace" class="input-field" style="margin:0;" disabled></select>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+              <label for="modalPriority" style="font-size: 12px; color: var(--text-2); font-weight: bold;">🚨
+                Priorità</label>
+              <select id="modalPriority" class="input-field" style="margin:0;" disabled>
+                <option value="bassa">Bassa 🟢</option>
+                <option value="media">Media 🟡</option>
+                <option value="alta">Alta 🔴</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-actions" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <button id="modalTimeMachineBtn" class="btn hidden"
+              style="background: var(--badge-warn); color: var(--badge-warn-t);">🕒 Ripristina Versione
+              Precedente</button>
+            <button id="modalEditBtn" class="btn">✏️ Modifica</button>
+
+            <button id="modalSaveBtn" class="btn hidden" style="background: var(--badge-ok-t);">💾 Salva
+              Modifiche</button>
+
+            <div id="autoSaveUiContainer" class="hidden" style="display: flex; gap: 10px;">
+              <div id="modalAutoSaveStatus"
+                style="flex: 1; text-align: center; color: var(--text-2); font-size: 13px; padding: 10px 0; font-weight: bold; background: var(--bg-hover); border-radius: 6px;">
+              </div>
+              <button id="modalDoneBtn" class="btn" style="background: var(--accent); flex: 1;">✅ Fine
+                Modifica</button>
+            </div>
+
+            <button id="modalDeleteBtn" class="btn btn-danger">🗑️ Elimina</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="fullChartModal" class="modal-overlay hidden" style="z-index: 3500;">
+    <div class="modal-card"
+      style="width: 90%; max-width: 1000px; height: 80vh; display: flex; flex-direction: column; background: var(--bg-card);">
+      <button id="closeFullChartBtn" class="modal-close" style="z-index: 10;">&times;</button>
+      <h2 id="fullChartTitle" style="margin-bottom: 20px; color: var(--text-1);">Analisi Completa</h2>
+      <div style="flex: 1; position: relative; width: 100%;">
+        <canvas id="fullChartCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+  <div id="celebrationModal" class="modal-overlay hidden" style="z-index: 4000;">
+    <div class="auth-card"
+      style="max-width: 350px; text-align: center; border: 2px solid var(--accent); box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.4); background: var(--bg-card);">
+      <div id="celebrationIcon" style="font-size: 70px; margin-bottom: 10px; text-shadow: 0 0 20px var(--accent);">🌟
+      </div>
+      <h2 id="celebrationTitle"
+        style="color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; font-size: 22px;">
+        Titolo</h2>
+      <p id="celebrationMessage" style="color: var(--text-1); font-size: 15px; margin-bottom: 25px;">Messaggio di
+        congratulazioni!</p>
+      <button id="closeCelebrationBtn" class="btn btn-full"
+        style="background: var(--accent); font-size: 16px;">Fantastico!</button>
+    </div>
+  </div>
+  <div id="loader" class="visible">
+    <div class="loader-content" style="text-align: center; width: 80%; max-width: 300px;">
+      <div class="logo-icon"
+        style="width: 84px; height: 84px; margin: 0 auto 20px; background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle class="star s1" cx="5" cy="17" r="2.2" fill="currentColor" />
+          <circle class="star s2" cx="12" cy="5" r="3" fill="currentColor" />
+          <circle class="star s3" cx="19" cy="14" r="2.2" fill="currentColor" />
+          <circle class="star s4" cx="14" cy="20" r="1.8" fill="currentColor" />
+
+          <line class="const-line" x1="5" y1="17" x2="12" y2="5" stroke="currentColor" stroke-width="1.2" />
+          <line class="const-line" x1="12" y1="5" x2="19" y2="14" stroke="currentColor" stroke-width="1.2" />
+          <line class="const-line" x1="19" y1="14" x2="14" y2="20" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+      </div>
+      <div class="loader-text" style="color: var(--text-1); font-weight: 600; margin-bottom: 15px; font-size: 16px;">
+        Caricamento in corso...</div>
+      <div class="loader-bar-container"
+        style="width: 100%; height: 6px; background: var(--bg-card2); border-radius: 10px; overflow: hidden; border: 1px solid var(--border);">
+        <div id="loaderFill" style="width: 0%; height: 100%; background: var(--accent); transition: width 0.4s ease;">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast">Messaggio</div>
+  <div id="gamificationHelpModal" class="modal-overlay hidden" style="z-index: 3200;">
+    <div class="auth-card" style="max-width: 400px; text-align: left;">
+      <h2 style="color: var(--accent); margin-bottom: 15px;">Guida ai Punti (XP)</h2>
+      <p style="color: var(--text-2); font-size: 13px; margin-bottom: 20px;">Ecco come puoi far salire di livello il tuo
+        profilo Zenith:</p>
+
+      <ul style="color: var(--text-1); font-size: 14px; line-height: 2; list-style: none; padding: 0;">
+        <li>📝 <strong>Nuova Nota:</strong> +50 XP <small style="color: var(--text-3);">(Min. 20 car. / Max 5 al
+            giorno)</small></li>
+        <li>🏷️ <strong>Nuovo Tag:</strong> +20 XP <small style="color: var(--text-3);">(Max 3 al giorno)</small></li>
+        <li>📁 <strong>Nuova Cartella:</strong> +15 XP <small style="color: var(--text-3);">(Max 3 al giorno)</small>
+        </li>
+        <li>🧹 <strong>Svuota Cestino:</strong> +30 XP <small style="color: var(--text-3);">(Ogni 24 ore)</small></li>
+      </ul>
+
+      <div
+        style="margin-top: 20px; padding: 10px; background: var(--bg-card2); border-radius: 8px; border-left: 3px solid var(--badge-warn-t); font-size: 12px; color: var(--text-2);">
+        💡 <strong>Nota:</strong> I limiti giornalieri servono a mantenere il sistema bilanciato. Continua a scrivere
+        ogni giorno per sbloccare tutti i badge!
+      </div>
+
+      <button id="closeGamiHelpBtn" class="btn btn-full" style="margin-top: 25px;">Ho capito!</button>
+    </div>
+  </div>
+  <div id="paywallModal" class="modal-overlay hidden" style="z-index: 6000; backdrop-filter: blur(12px);">
+    <div class="auth-card glass-card" style="max-width: 650px; width: 90%; padding: 30px; text-align: center;">
+      <h2 style="color: var(--text-1); margin-bottom: 5px;">Scegli il tuo prossimo livello</h2>
+      <p style="color: var(--text-2); margin-bottom: 25px; font-size: 14px;">Sblocca le funzionalità avanzate e potenzia
+        il tuo flusso di lavoro.</p>
+
+      <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 25px;">
+
+        <div class="feature-box"
+          style="flex: 1; min-width: 250px; border: 1px solid var(--border); background: var(--bg-card2); opacity: 0.7;">
+          <div style="font-size: 24px; margin-bottom: 10px;">🌱</div>
+          <h3 style="font-size: 18px; color: var(--text-1);">Piano Novizio</h3>
+          <p style="font-size: 12px; color: var(--text-3); margin-bottom: 15px;">Il tuo piano attuale</p>
+          <ul
+            style="text-align: left; font-size: 12px; list-style: none; padding: 0; color: var(--text-2); line-height: 1.8;">
+            <li>✔️ 3 Cartelle Max</li>
+            <li>✔️ Temi Base</li>
+            <li>✔️ Note Illimitate</li>
+          </ul>
+          <button class="btn btn-full" disabled
+            style="margin-top: 20px; background: var(--bg-hover); color: var(--text-3); cursor: default;">Già
+            attivo</button>
+        </div>
+
+        <div class="feature-box"
+          style="flex: 1; min-width: 250px; border: 2px solid var(--accent); position: relative; transform: scale(1.02); box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.2);">
+          <div
+            style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; font-size: 10px; padding: 4px 12px; border-radius: 20px; font-weight: bold; text-transform: uppercase;">
+            Consigliato</div>
+          <div style="font-size: 24px; margin-bottom: 10px;">👑</div>
+          <h3 style="font-size: 18px; color: var(--text-1);">Piano Guru</h3>
+          <p style="font-size: 12px; color: var(--accent); margin-bottom: 15px; font-weight: bold;">Sblocca tutto</p>
+          <ul
+            style="text-align: left; font-size: 12px; list-style: none; padding: 0; color: var(--text-2); line-height: 1.8;">
+            <li>✨ Grafi Relazionali</li>
+            <li>🎨 Tutti i Temi Premium</li>
+            <li>📂 Cartelle Illimitate</li>
+            <li>🛠️ Layout Personalizzati</li>
+          </ul>
+          <button id="modalUpgradeToGuruBtn" class="btn btn-full"
+            style="margin-top: 20px; background: var(--accent);">Passa a Guru</button>
+        </div>
+      </div>
+
+      <button id="closePaywallBtn" class="btn-text" style="color: var(--text-3); font-size: 13px;">Magari più
+        tardi...</button>
+    </div>
+  </div>
+  <div id="autocomplete-menu" class="hidden">
+  </div>
+
+  <div id="settings-actions-bar">
+    <span>Hai modifiche non salvate!</span>
+    <button id="applySettingsBtn" class="btn" style="background: var(--badge-ok-t); padding: 8px 20px;">✅
+      Applica</button>
+  </div>
+  <div id="zen-overlay">
+    <button id="exitZenBtn">❌ Esci (Esc)</button>
+    <div class="zen-editor-container">
+      <textarea id="zen-editor-area" placeholder="Scrivi nell'infinità..."></textarea>
+    </div>
+  </div>
+
+  <script src="./lib/d3.v7.min.js"></script>
+  <script src="./lib/chart.umd.min.js"></script>
+  <script src="./lib/confetti.browser.min.js"></script>
+  <script src="./lib/html2pdf.bundle.min.js"></script>
+  <script src="./lib/crypto-js.min.js"></script>
+
+  <script src="js/ExportManager.js"></script>
+  <script src="./js/Utils.js"></script>
+  <script src="./js/PlanManager.js"></script>
+  <script src="./js/SettingsManager.js"></script>
+  <script src="./js/AuthManager.js"></script>
+  <script src="./js/FileSystemManager.js"></script>
+  <script src="./js/CalendarManager.js"></script>
+  <script src="./js/GraphManager.js"></script>
+  <script src="./js/NotesManager.js"></script>
+  <script src="./js/TagManager.js"></script>
+  <script src="./js/GamificationManager.js"></script>
+  <script src="./js/ZenithEngine.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(registration => {
+            console.log('✅ Service Worker registrato con successo!', registration.scope);
+            
+            // 🟢 LOGICA DEL TOAST DI AGGIORNAMENTO
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  const toast = document.getElementById('toast');
+                  toast.innerHTML = `
+                    🚀 Nuova versione disponibile! 
+                    <button id="reloadAppBtn" style="margin-left: 12px; padding: 6px 12px; background: #1a1a1e; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s;">Aggiorna Ora</button>
+                  `;
+                  toast.style.pointerEvents = 'auto';
+                  toast.classList.add('show');
+                  
+                  document.getElementById('reloadAppBtn').addEventListener('click', () => {
+                    newWorker.postMessage({ action: 'skipWaiting' });
+                  });
+                }
+              });
+            });
+
+            // ==========================================
+            // 📡 NUOVI SENSORI DI RISVEGLIO
+            // ==========================================
+
+            // 1. Quando il telefono ritrova la connessione (es. toglie Modalità Aereo)
+            window.addEventListener('online', () => {
+                console.log("🌐 Connessione ripristinata! Controllo aggiornamenti...");
+                registration.update(); // Forza il controllo del file sw.js sul server
+            });
+
+            // 2. Quando l'utente torna sull'app dopo aver fatto altro
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    console.log("👀 App di nuovo visibile! Controllo aggiornamenti...");
+                    registration.update();
+                }
+            });
+
+          })
+          .catch(error => {
+            console.error('❌ Errore nella registrazione del Service Worker:', error);
+          });
+
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing) {
+            refreshing = true;
+            window.location.reload();
+          }
+        });
+      });
+    }
+  </script>
+</body>
+
+</html>
