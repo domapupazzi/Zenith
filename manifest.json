@@ -2,7 +2,7 @@
   "name": "Zenith - Il tuo Vault Personale",
   "short_name": "Zenith",
   "description": "App per appunti e gestione note offline-first.",
-  "start_url": "./Zenith.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0a1a",
   "theme_color": "#4a56d8",
