@@ -406,6 +406,7 @@ class ZenithEngine {
                 this.plans.initSecurityHooks();
                 this.maintainTrash();
                 this.startTimer();
+                this.checkExpiring();
                 this.calendar.render();
                 this.notes.renderNotes();
                 this.updateStats();
