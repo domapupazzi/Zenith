@@ -2,7 +2,7 @@ const CACHE_NAME = 'zenith-v0.007'; // Versione aggiornata
 
 const ASSETS_TO_CACHE = [
   './',
-  './Zenith.html',
+  './index.html',
   './Zenith_css.css',
   './manifest.json',
   './icon-192x192.png',
@@ -82,7 +82,7 @@ self.addEventListener('fetch', (event) => {
                 });
             }).catch(() => {
                 // Se il cronometro scade o manca internet, restituiamo il salvataggio locale!
-                return caches.match('./Zenith.html');
+                return caches.match('./index.html');
             })
         );
         return;
