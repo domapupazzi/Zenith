@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zenith-v0.013'; // Versione aggiornata
+const CACHE_NAME = 'zenith-v0.014'; // Versione aggiornata
 
 const ASSETS_TO_CACHE = [
   './',
